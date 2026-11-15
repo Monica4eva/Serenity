@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Get Project Serenity</title>
+<meta name="description" content="Download Project Serenity for Android, or add it to your iPhone home screen. Daily support for your recovery journey." />
+<meta name="theme-color" content="#4E649D" />
+<link rel="icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<style>
+  :root {
+    --navy: #4E649D; --green: #0C6434; --green-btn: #145533; --title: #0A2A1F; --body: #4F5B57;
+    --cream: #FFFBF8; --card: #FFFFFF; --line: #E3E8EC; --red: #F20F0F; --tint: #E8F0F5;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--title);
+    background: linear-gradient(180deg, #CDE3F0 0%, #FAFBFC 55%); min-height: 100vh; line-height: 1.5;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 24px 20px 48px; }
+  .top { display: flex; justify-content: flex-end; }
+  .lang { display: inline-flex; border: 1px solid var(--navy); border-radius: 999px; overflow: hidden; background: var(--card); }
+  .lang button { border: 0; background: transparent; padding: 8px 14px; font-weight: 700; color: var(--navy); cursor: pointer; font-size: 14px; }
+  .lang button[aria-pressed="true"] { background: var(--navy); color: #fff; }
+  header { text-align: center; margin: 8px 0 24px; }
+  header img.mark { width: 96px; height: auto; }
+  header img.word { width: 220px; max-width: 70%; height: auto; display: block; margin: 6px auto 0; }
+  h1 { font-size: 28px; margin: 18px 0 6px; }
+  .sub { color: var(--body); margin: 0 auto; max-width: 520px; }
+  .card { background: var(--card); border-radius: 18px; padding: 20px; margin: 16px 0; box-shadow: 0 3px 12px rgba(22, 41, 95, .08); }
+  .card.recommended { outline: 2px solid var(--navy); }
+  .badge { display: inline-block; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px; margin-bottom: 8px; }
+  .row { display: flex; align-items: center; gap: 14px; }
+  .icon { width: 48px; height: 48px; border-radius: 14px; background: var(--tint); display: grid; place-items: center; flex: none; }
+  .icon svg { width: 26px; height: 26px; fill: var(--navy); }
+  h2 { font-size: 20px; margin: 0; }
+  .muted { color: var(--body); font-size: 14px; margin: 2px 0 0; }
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; border-radius: 999px; padding: 0 24px;
+    background: var(--navy); color: #fff; font-weight: 700; font-size: 17px; text-decoration: none; margin: 16px 0 6px; border: 0; width: 100%; cursor: pointer;
+  }
+  .btn.green { background: var(--green-btn); }
+  .btn.outline { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); }
+  .btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  ol { margin: 12px 0 0; padding-left: 22px; }
+  ol li { margin: 6px 0; }
+  .note { background: var(--cream); border-radius: 14px; padding: 14px 16px; font-size: 14px; color: var(--title); margin-top: 12px; }
+  .qr { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .qr .code { background: #fff; padding: 8px; border-radius: 12px; border: 1px solid var(--line); line-height: 0; }
+  .qr .code img, .qr .code svg { width: 168px; height: 168px; }
+  .help { background: var(--red); color: #fff; border-radius: 14px; padding: 14px 16px; font-weight: 700; display: flex; gap: 10px; align-items: center; text-decoration: none; }
+  footer { text-align: center; color: var(--body); font-size: 13px; margin-top: 28px; }
+  a { color: var(--navy); }
+  @media (prefers-color-scheme: dark) {
+    :root { --title: #EAF0F7; --body: #B6C2CF; --card: #16233A; --cream: #1B2740; --line: #2A3550; --tint: #22304A; --navy: #8EA6E0; }
+    body { background: #0D1626; }
+    .btn { color: #0D1626; }
+    .btn.green { color: #fff; }
+    .lang button[aria-pressed="true"] { color: #0D1626; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="lang" role="group" aria-label="Language / Puo">
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="tn" aria-pressed="false">Setswana</button>
+    </div>
+  </div>
+
+  <header>
+    <img class="mark" src="logo.png" alt="" />
+    <img class="word" src="wordmark.png" alt="Project Serenity" />
+    <h1 data-t="title"></h1>
+    <p class="sub" data-t="sub"></p>
+  </header>
+
+  <!-- Android -->
+  <section class="card" id="android" aria-labelledby="android-h">
+    <span class="badge" data-t="forYou" hidden></span>
+    <div class="row">
+      <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.6 9.48l1.84-3.18a.38.38 0 00-.66-.38l-1.86 3.22A11.4 11.4 0 0012 8.1c-1.8 0-3.5.4-4.92 1.04L5.22 5.92a.38.38 0 00-.66.38L6.4 9.48A10.8 10.8 0 001 18h22a10.8 10.8 0 00-5.4-8.52zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/></svg></div>
+      <div><h2 id="android-h" data-t="androidTitle"></h2><p class="muted" data-t="androidSub"></p></div>
+    </div>
+    <a class="btn green" id="apkBtn" href="#" data-t="androidBtn"></a>
+    <ol>
+      <li data-t="a1"></li><li data-t="a2"></li><li data-t="a3"></li><li data-t="a4"></li>
+    </ol>
+    <p class="note" data-t="androidNote"></p>
+  </section>
+
+  <!-- iPhone -->
+  <section class="card" id="iphone" aria-labelledby="iphone-h">
+    <span class="badge" data-t="forYou" hidden></span>
+    <div class="row">
+      <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31a4.05 4.05 0 00-3.18-1.72c-1.35-.14-2.65.8-3.33.8-.7 0-1.75-.78-2.88-.76a4.26 4.26 0 00-3.59 2.18c-1.54 2.66-.39 6.6 1.1 8.76.74 1.06 1.6 2.24 2.74 2.2 1.1-.04 1.52-.71 2.85-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.14a9.3 9.3 0 001.2-2.47 3.83 3.83 0 01-2.3-3.52zM14.2 6.13a3.9 3.9 0 00.9-2.8 4 4 0 00-2.6 1.34 3.74 3.74 0 00-.92 2.72 3.3 3.3 0 002.62-1.26z"/></svg></div>
+      <div><h2 id="iphone-h" data-t="iphoneTitle"></h2><p class="muted" data-t="iphoneSub"></p></div>
+    </div>
+    <a class="btn" id="openApp" href="/" data-t="iphoneBtn"></a>
+    <ol>
+      <li data-t="i1"></li><li data-t="i2"></li><li data-t="i3"></li><li data-t="i4"></li>
+    </ol>
+    <div id="tfBlock">
+      <a class="btn outline" id="tfBtn" href="#" data-t="tfBtn"></a>
+      <p class="muted" data-t="tfNote"></p>
+    </div>
+  </section>
+
+  <!-- Any device -->
+  <section class="card" id="web" aria-labelledby="web-h">
+    <div class="row">
+      <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 6h-2.95a15.6 15.6 0 00-1.38-3.56A8.03 8.03 0 0118.93 8zM12 4.04A14 14 0 0113.91 8h-3.82A14 14 0 0112 4.04zM4.26 14a8.2 8.2 0 010-4h3.38a16.5 16.5 0 000 4H4.26zm.81 2h2.95a15.6 15.6 0 001.38 3.56A8 8 0 015.07 16zM8.02 8H5.07a8 8 0 014.33-3.56A15.6 15.6 0 008.02 8zM12 19.96A14 14 0 0110.09 16h3.82A14 14 0 0112 19.96zM14.34 14H9.66a14.6 14.6 0 010-4h4.68a14.6 14.6 0 010 4zm.25 5.56A15.6 15.6 0 0015.97 16h2.96a8.03 8.03 0 01-4.34 3.56zM16.36 14a16.5 16.5 0 000-4h3.38a8.2 8.2 0 010 4h-3.38z"/></svg></div>
+      <div><h2 id="web-h" data-t="webTitle"></h2><p class="muted" data-t="webSub"></p></div>
+    </div>
+    <a class="btn outline" href="/" data-t="webBtn"></a>
+    <p class="note" data-t="webNote"></p>
+  </section>
+
+  <!-- QR for computers -->
+  <section class="card" aria-labelledby="qr-h">
+    <h2 id="qr-h" data-t="qrTitle"></h2>
+    <div class="qr" style="margin-top:12px">
+      <div class="code" id="qr" role="img" aria-label="QR code"></div>
+      <p class="muted" style="flex:1;min-width:200px" data-t="qrSub"></p>
+    </div>
+  </section>
+
+  <a class="help" href="tel:997">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11.4 11.4 0 003.6.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1z"/></svg>
+    <span data-t="help"></span>
+  </a>
+
+  <footer>
+    <p data-t="footer"></p>
+  </footer>
+</div>
+
+<script src="qrcode.js"></script>
+<script>
+  // ---------- SETTINGS: change these links when you have them ----------
+  // Android: paste the "Install" link of your newest APK build from expo.dev (Builds > newest build).
+  var ANDROID_APK_URL = 'https://expo.dev/accounts/monica4eva/projects/project-serenity/builds';
+  // iPhone: paste your TestFlight public link when you have an Apple Developer account. Leave '' to hide it.
+  var TESTFLIGHT_URL = '';
+  // ---------------------------------------------------------------------
+
+  var T = {
+    en: {
+      title: 'Get Project Serenity',
+      sub: 'Daily support, healthy habits and lasting well-being on your recovery journey. Free, private, in English and Setswana.',
+      forYou: 'Best for your phone',
+      androidTitle: 'Android phones', androidSub: 'Install the full app from a download link.',
+      androidBtn: 'Download for Android',
+      a1: 'Tap Download for Android, then open the downloaded file (or tap Install on the page that opens).',
+      a2: 'If your phone asks, allow your browser to "Install unknown apps". You only do this once.',
+      a3: 'Tap Install, then Open.',
+      a4: 'Choose your language and create your account.',
+      androidNote: 'Android shows a warning because this app is not from the Play Store yet. That is normal for apps installed from a link.',
+      iphoneTitle: 'iPhone', iphoneSub: 'Add Serenity to your home screen from Safari. No App Store needed.',
+      iphoneBtn: 'Open Serenity in Safari',
+      i1: 'Open this page in Safari (not Chrome) and tap Open Serenity in Safari.',
+      i2: 'Tap the Share button (the square with an arrow pointing up).',
+      i3: 'Scroll down and tap Add to Home Screen, then Add.',
+      i4: 'Open Serenity from the new icon on your home screen.',
+      tfBtn: 'Install the full iPhone app with TestFlight', tfNote: 'You need Apple’s free TestFlight app. Tap the button and follow the steps.',
+      webTitle: 'Any phone or computer', webSub: 'Use Serenity in your web browser.',
+      webBtn: 'Open the web app',
+      webNote: 'The web version keeps your information in this browser. For the strongest privacy, use the Android app, and do not use the web version on a shared or public computer.',
+      qrTitle: 'On a computer? Scan to open on your phone',
+      qrSub: 'Point your phone camera at this code to open this page on your phone, then follow the steps for Android or iPhone.',
+      help: 'In danger right now? Call 997 (ambulance) or 999 (police)',
+      footer: 'Project Serenity. Your recovery, your pace.'
+    },
+    tn: {
+      title: 'Tsenya Project Serenity',
+      sub: 'Thuso ya letsatsi le letsatsi, ditlwaelo tse di itekanetseng le boitekanelo jo bo nnelang mo loetong lwa gago lwa go fola. Mahala, sephiri, ka Sekgoa le Setswana.',
+      forYou: 'E siametse founu ya gago',
+      androidTitle: 'Difounu tsa Android', androidSub: 'Tsenya tirisego e e feletseng go tswa mo kgolaganong ya go e tsenya.',
+      androidBtn: 'Tsenya mo Android',
+      a1: 'Tobetsa Tsenya mo Android, morago o bule faele e e tsentsweng (kgotsa o tobetse Install mo tsebeng e e bulegang).',
+      a2: 'Fa founu ya gago e botsa, letla browser ya gago go "Install unknown apps". O dira se gangwe fela.',
+      a3: 'Tobetsa Install, morago Open.',
+      a4: 'Tlhopha puo ya gago mme o dire akhaonto ya gago.',
+      androidNote: 'Android e bontsha tlhagiso ka gonne tirisego e ga e ise e nne mo Play Store. Seo se tlwaelegile mo ditirisegong tse di tsenngwang go tswa mo kgolaganong.',
+      iphoneTitle: 'iPhone', iphoneSub: 'Tsenya Serenity mo sekirining sa gago sa ntlha go tswa mo Safari. Ga o tlhoke App Store.',
+      iphoneBtn: 'Bula Serenity mo Safari',
+      i1: 'Bula tsebe e mo Safari (e seng Chrome) mme o tobetse Bula Serenity mo Safari.',
+      i2: 'Tobetsa konopo ya Share (sekwere se se nang le motsu o o lebileng kwa godimo).',
+      i3: 'Fologa mme o tobetse Add to Home Screen, morago Add.',
+      i4: 'Bula Serenity go tswa mo setshwantshong se sešwa mo sekirining sa gago sa ntlha.',
+      tfBtn: 'Tsenya tirisego e e feletseng ya iPhone ka TestFlight', tfNote: 'O tlhoka tirisego ya Apple ya TestFlight e e sa duelweng. Tobetsa konopo mme o latele dikgato.',
+      webTitle: 'Founu nngwe le nngwe kgotsa khomputara', webSub: 'Dirisa Serenity mo browser ya gago.',
+      webBtn: 'Bula tirisego ya web',
+      webNote: 'Mofuta wa web o boloka tshedimosetso ya gago mo browser e. Go sireletsega go gaisa, dirisa tirisego ya Android, mme o se ka wa dirisa mofuta wa web mo khomputareng e e abelanwang kgotsa ya setšhaba.',
+      qrTitle: 'O mo khomputareng? Sekena go e bula mo founung ya gago',
+      qrSub: 'Lebisa khamera ya founu ya gago mo khoutong e go bula tsebe e mo founung ya gago, morago o latele dikgato tsa Android kgotsa iPhone.',
+      help: 'A o mo kotsing jaanong? Leletsa 997 (ambulense) kgotsa 999 (mapodise)',
+      footer: 'Project Serenity. Go fola ga gago, ka lebelo la gago.'
+    }
+  };
+
+  function setLang(lang) {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = T[lang][el.getAttribute('data-t')] || ''; });
+    document.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang)); });
+    try { localStorage.setItem('serenity.downloadLang', lang); } catch (e) {}
+  }
+  document.querySelectorAll('.lang button').forEach(function (b) { b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); }); });
+
+  // Links
+  var apk = document.getElementById('apkBtn');
+  if (ANDROID_APK_URL) apk.href = ANDROID_APK_URL; else apk.setAttribute('aria-disabled', 'true');
+  if (TESTFLIGHT_URL) document.getElementById('tfBtn').href = TESTFLIGHT_URL; else document.getElementById('tfBlock').hidden = true;
+
+  // Show the right phone first
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/i.test(ua);
+  var first = isIOS ? 'iphone' : isAndroid ? 'android' : null;
+  if (first) {
+    var card = document.getElementById(first);
+    card.classList.add('recommended');
+    card.querySelector('.badge').hidden = false;
+    card.parentNode.insertBefore(card, card.parentNode.querySelector('.card'));
+  }
+
+  // QR code of this page
+  try {
+    var q = qrcode(0, 'M');
+    q.addData(location.href.split('#')[0]);
+    q.make();
+    document.getElementById('qr').innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+  } catch (e) {}
+
+  var saved = null;
+  try { saved = localStorage.getItem('serenity.downloadLang'); } catch (e) {}
+  setLang(saved || (/^tn\b/i.test(navigator.language || '') ? 'tn' : 'en'));
+</script>
+</body>
+</html>

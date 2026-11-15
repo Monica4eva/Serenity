@@ -1,0 +1,34 @@
+# Supabase CLI settings (used by `npx supabase start` for local testing).
+# The hosted project is set up in the dashboard; see SECURITY.md.
+project_id = "project-serenity"
+
+[auth]
+site_url = "serenity://auth-callback"
+additional_redirect_urls = ["serenity://auth-callback", "exp://**", "http://localhost:8081/**"]
+enable_signup = true
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+minimum_password_length = 10
+password_requirements = "letters_digits"
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+double_confirm_changes = true
+secure_password_change = true
+
+# Secrets come from environment variables, never from this file.
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+
+[auth.external.facebook]
+enabled = true
+client_id = "env(SUPABASE_AUTH_EXTERNAL_FACEBOOK_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_FACEBOOK_SECRET)"
+
+[auth.external.apple]
+enabled = true
+client_id = "env(SUPABASE_AUTH_EXTERNAL_APPLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_APPLE_SECRET)"
