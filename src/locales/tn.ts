@@ -914,6 +914,18 @@ const tn: Strings = {
     okayNote: 'Konopo e tla fetoga mmala wa namune sebakanyana. E tla boela go nna khibidu fa dilo di tswelela di le thata.',
     howContacted: 'Ngaka ya gago ya maikutlo e ikgolaganngwa le yone fela fa o tobetsa leletsa kgotsa romela molaetsa. Ditemoso tse di iketsang di tla tla moragonyana, mme di tla romelwa fela go batho ba o ba neileng tetla ya tshoganyetso.',
   },
+  reset: {
+    title: 'Baya lefoko la sephiri le lešwa',
+    sub: 'Tlhopha lefoko la sephiri le lešwa la akhaonto ya gago ya Serenity.',
+    pw: 'Lefoko la sephiri le lešwa',
+    pw2: 'Kwala lefoko la sephiri le lešwa gape',
+    rules: 'Bonnye ditlhaka di le 10, ka ditlhaka le bonnye nomoro e le nngwe.',
+    save: 'Boloka lefoko la sephiri le lešwa',
+    saving: 'Re a boloka...',
+    done: 'Lefoko la gago la sephiri le fetotswe. Tsweetswee tsena ka lefoko la sephiri le lešwa.',
+    expired: 'Kgolagano eno e fetile kgotsa e setse e dirisitswe. Ya kwa tsebeng ya go tsena, tobetsa "O lebetse lefoko la sephiri?" mme o kope kgolagano e ntšhwa. E bule mo founung kgotsa khomputareng e o e kopileng mo go yone.',
+    toLogin: 'Ya go tsena',
+  },
   exit: { title: 'Dintlha', body: 'Ga go ise go nne le dintlha.' },
   breathe: {
     in: 'Gogela mowa',

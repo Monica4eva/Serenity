@@ -900,6 +900,18 @@ const en = {
     okayNote: 'The button will turn orange for a while. It will turn red again if things stay difficult.',
     howContacted: 'Your psychologist is only contacted when you tap call or message. Automatic alerts will come later, and only for people you have given emergency permission.',
   },
+  reset: {
+    title: 'Set a new password',
+    sub: 'Choose a new password for your Serenity account.',
+    pw: 'New password',
+    pw2: 'Type the new password again',
+    rules: 'At least 10 characters, with letters and at least one number.',
+    save: 'Save new password',
+    saving: 'Saving...',
+    done: 'Your password has been changed. Please log in with your new password.',
+    expired: 'This link has expired or was already used. Go to the login page, tap "Forgot your password?" and ask for a new link. Open it on the same phone or computer where you asked for it.',
+    toLogin: 'Go to log in',
+  },
   exit: { title: 'Notes', body: 'No notes yet.' },
   breathe: {
     in: 'Breathe in',

@@ -88,8 +88,31 @@ export async function signIn(email: string, password: string): Promise<AuthResul
 
 export async function sendPasswordReset(email: string): Promise<AuthResult> {
   if (!supabase) return { ok: false, message: 'Backend not configured' };
-  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  // The email link brings the person back to the "Set a new password" screen
+  // (https://<app>/reset-password on the web, serenity://reset-password on phones).
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: Linking.createURL('reset-password') });
   return error ? { ok: false, message: error.message } : { ok: true };
+}
+
+/** True while a password reset is in progress: the short reset session must not download anyone's data. */
+export let resettingPassword = false;
+
+/** Step 2 of a reset: turn the one-time code from the email link into a short session. */
+export async function openResetLink(code: string): Promise<AuthResult> {
+  if (!supabase) return { ok: false, message: 'Backend not configured' };
+  resettingPassword = true;
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  return error || !data.session ? { ok: false, message: error?.message ?? 'expired' } : { ok: true, userId: data.session.user.id };
+}
+
+/** Step 3: save the new password, then sign out so the person logs in fresh. */
+export async function setNewPassword(password: string): Promise<AuthResult> {
+  if (!supabase) return { ok: false, message: 'Backend not configured' };
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { ok: false, message: error.message };
+  await supabase.auth.signOut();
+  resettingPassword = false;
+  return { ok: true };
 }
 
 export async function signOut() {

@@ -1,6 +1,7 @@
 // Runs sync in the background: after changes (debounced), when the app comes back to the
 // foreground, and right after logging in. The app never waits on it.
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { resettingPassword } from '../lib/auth';
 import { AppState } from 'react-native';
 import { useStore } from '../lib/store';
 import { backendEnabled, supabase } from '../lib/supabase';
@@ -30,7 +31,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
   };
 
   const syncNow = useCallback(async () => {
-    if (!backendEnabled || busy.current) return;
+    if (!backendEnabled || busy.current || resettingPassword) return;
     busy.current = true;
     setStatus('syncing');
     try {
@@ -74,7 +75,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
       if (data.session) syncNow();
     });
     const { data } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN') pullNow();
+      if (event === 'SIGNED_IN' && !resettingPassword) pullNow();
       if (event === 'SIGNED_OUT') setStatus('signedOut');
     });
     return () => data.subscription.unsubscribe();

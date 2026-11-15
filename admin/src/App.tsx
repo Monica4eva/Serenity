@@ -1,6 +1,6 @@
 // Serenity Admin: sign in, second step (authenticator app), then the dashboard.
 import React, { useEffect, useState } from 'react';
-import { adminStatus, DEMO, hasSession, mfaEnroll, mfaFactor, mfaVerify, myRole, sb, signIn, signOut, type AdminRole } from './api';
+import { adminStatus, DEMO, hasSession, mfaEnroll, mfaFactor, mfaVerify, myRole, openedFromReset, sb, sendReset, setNewPassword, signIn, signOut, waitForResetSession, type AdminRole } from './api';
 import { Button, ErrorNote } from './ui';
 import Overview from './pages/Overview';
 import Counsellors from './pages/Counsellors';
@@ -8,7 +8,7 @@ import Content from './pages/Content';
 import Helplines from './pages/Helplines';
 import { ActivityLog, Admins } from './pages/Team';
 
-type Stage = 'loading' | 'signin' | 'mfa' | 'notadmin' | 'in';
+type Stage = 'loading' | 'signin' | 'mfa' | 'notadmin' | 'in' | 'reset';
 type Page = 'overview' | 'content' | 'counsellors' | 'helplines' | 'admins' | 'log';
 
 const PAGES: { key: Page; label: string; roles: AdminRole[] }[] = [
@@ -26,6 +26,7 @@ export default function App() {
   const [page, setPage] = useState<Page>(() => (location.hash.slice(1) as Page) || 'overview');
 
   const check = async () => {
+    if (!DEMO && openedFromReset()) return setStage('reset');
     if (DEMO) {
       setRole('admin');
       return setStage('in');
@@ -43,7 +44,10 @@ export default function App() {
   };
   useEffect(() => {
     check();
-    const sub = sb?.auth.onAuthStateChange((e) => e === 'SIGNED_OUT' && setStage('signin'));
+    const sub = sb?.auth.onAuthStateChange((e) => {
+      if (e === 'SIGNED_OUT') setStage('signin');
+      if (e === 'PASSWORD_RECOVERY') setStage('reset');
+    });
     return () => sub?.data.subscription.unsubscribe();
   }, []);
   useEffect(() => {
@@ -52,6 +56,7 @@ export default function App() {
 
   if (stage === 'loading') return <div className="center"><p className="loading">Loading…</p></div>;
   if (stage === 'signin') return <SignIn onDone={check} />;
+  if (stage === 'reset') return <ResetPassword onDone={check} />;
   if (stage === 'mfa') return <Mfa onDone={check} />;
   if (stage === 'notadmin')
     return (
@@ -124,6 +129,7 @@ function SignIn({ onDone }: { onDone: () => void }) {
   const [pw, setPw] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const [sent, setSent] = useState(false);
   return (
     <Shell>
       <h2>Sign in</h2>
@@ -147,8 +153,24 @@ function SignIn({ onDone }: { onDone: () => void }) {
         <label>Email<input type="email" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} /></label>
         <label>Password<input type="password" autoComplete="current-password" required value={pw} onChange={(e) => setPw(e.target.value)} /></label>
         <ErrorNote error={err} />
+        {sent ? <div className="ok">If an account exists for {email}, we have sent a link to reset the password. Open it on this computer.</div> : null}
         <Button type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</Button>
       </form>
+      <button
+        className="link"
+        onClick={async () => {
+          setErr('');
+          if (!/^\S+@\S+\.\S+$/.test(email.trim())) return setErr('Type your email above first, then tap "Forgot your password?".');
+          try {
+            await sendReset(email);
+            setSent(true);
+          } catch (e2) {
+            setErr((e2 as Error).message);
+          }
+        }}
+      >
+        Forgot your password?
+      </button>
     </Shell>
   );
 }
@@ -204,6 +226,55 @@ function Mfa({ onDone }: { onDone: () => void }) {
         <ErrorNote error={err} />
       )}
       <button className="link" onClick={() => signOut().then(onDone)}>Sign out</button>
+    </Shell>
+  );
+}
+
+function ResetPassword({ onDone }: { onDone: () => void }) {
+  const [ready, setReady] = useState<boolean | null>(null);
+  const [pw, setPw] = useState('');
+  const [pw2, setPw2] = useState('');
+  const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    waitForResetSession().then(setReady);
+  }, []);
+  return (
+    <Shell>
+      <h2>Set a new password</h2>
+      {ready === null ? <p className="loading">Opening your link…</p> : null}
+      {ready === false ? (
+        <>
+          <p className="sub">This link has expired or was already used. Go back to Sign in, type your email and tap "Forgot your password?" again. Open the new link on this computer.</p>
+          <Button onClick={() => { history.replaceState(null, '', location.pathname); onDone(); }}>Back to Sign in</Button>
+        </>
+      ) : null}
+      {ready ? (
+        <form
+          className="form"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setErr('');
+            if (pw.length < 10 || !/\d/.test(pw) || !/[A-Za-z]/.test(pw)) return setErr('Use at least 10 characters, with letters and at least one number.');
+            if (pw !== pw2) return setErr('The two passwords do not match.');
+            setBusy(true);
+            try {
+              await setNewPassword(pw);
+              onDone();
+            } catch (e2) {
+              setErr((e2 as Error).message);
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          <p className="sub">This also changes your password in the Serenity app.</p>
+          <label>New password<input type="password" autoComplete="new-password" required value={pw} onChange={(e) => setPw(e.target.value)} /></label>
+          <label>Type it again<input type="password" autoComplete="new-password" required value={pw2} onChange={(e) => setPw2(e.target.value)} /></label>
+          <ErrorNote error={err} />
+          <Button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save new password'}</Button>
+        </form>
+      ) : null}
     </Shell>
   );
 }

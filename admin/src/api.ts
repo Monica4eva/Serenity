@@ -7,7 +7,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-export const sb: SupabaseClient | null = url && key ? createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true } }) : null;
+export const sb: SupabaseClient | null = url && key ? createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' } }) : null;
 export const DEMO = !sb;
 
 export type AdminRole = 'admin' | 'clinician' | 'editor';
@@ -45,6 +45,30 @@ export async function signIn(email: string, password: string) {
   const { error } = await sb!.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
   fail(error);
 }
+/** Sends a reset email. The link comes back to this website with ?reset=1. */
+export async function sendReset(email: string) {
+  if (DEMO) return;
+  const back = `${location.origin}${location.pathname}?reset=1`;
+  const { error } = await sb!.auth.resetPasswordForEmail(email.trim().toLowerCase(), { redirectTo: back });
+  fail(error);
+}
+/** True when this page was opened from a reset email. */
+export const openedFromReset = () => new URLSearchParams(location.search).get('reset') === '1';
+/** Waits until the one-time code in the link has been turned into a session (done by the client). */
+export async function waitForResetSession(): Promise<boolean> {
+  for (let i = 0; i < 20; i++) {
+    const { data } = await sb!.auth.getSession();
+    if (data.session) return true;
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  return false;
+}
+export async function setNewPassword(password: string) {
+  const { error } = await sb!.auth.updateUser({ password });
+  fail(error);
+  history.replaceState(null, '', location.pathname); // remove ?reset=1&code=... from the address
+}
+
 export async function signOut() {
   if (!DEMO) await sb!.auth.signOut();
 }
