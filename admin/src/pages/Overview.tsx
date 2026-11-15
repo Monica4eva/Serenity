@@ -22,7 +22,10 @@ const LANG: Record<string, string> = { en: 'English', tn: 'Setswana' };
 export default function Overview() {
   const [d, setD] = useState<Impact | null>(null);
   const [err, setErr] = useState('');
-  const load = () => getImpact().then(setD).catch((e) => setErr(e.message));
+  const load = () =>
+    getImpact()
+      .then((x) => setD({ ...x, retention: x.retention ?? [], weekly: x.weekly ?? [], by_language: x.by_language ?? [], safety_30d: x.safety_30d ?? {}, slips: x.slips ?? { count: null, back_within_7d_pct: null, median_days_back: null } }))
+      .catch((e) => setErr(e.message));
   useEffect(() => {
     load();
   }, []);
@@ -92,6 +95,9 @@ export default function Overview() {
               <tr><th>Language</th><th>People</th><th>Still active after 30 days</th></tr>
             </thead>
             <tbody>
+              {d.by_language.length === 0 ? (
+                <tr><td colSpan={3} className="muted">No people in recovery yet.</td></tr>
+              ) : null}
               {d.by_language.map((l) => (
                 <tr key={l.language}>
                   <td>{LANG[l.language] ?? l.language}</td>

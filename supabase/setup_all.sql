@@ -1103,9 +1103,9 @@ begin
                   'mood', case when mood_n >= k then round(mood::numeric, 2) end,
                   'sleep', case when sleep_n >= k then round(sleep::numeric, 1) end,
                   'checkins', case when active >= k then checkins end) order by wk) from weekly),
-    'by_language', (select jsonb_agg(jsonb_build_object('language', language,
+    'by_language', (select coalesce(jsonb_agg(jsonb_build_object('language', language,
                   'members', case when members >= k then members end,
-                  'retention30', case when cohort30 >= k then round(100.0 * kept30 / cohort30) end) order by language) from langs),
+                  'retention30', case when cohort30 >= k then round(100.0 * kept30 / cohort30) end) order by language), '[]'::jsonb) from langs),
     'safety_30d', (select coalesce(jsonb_object_agg(kind, n), '{}'::jsonb) from (
                   select s.kind, count(*) as n from public.safety_events s
                   where s.created_at > now() - interval '30 days' group by s.kind) x),

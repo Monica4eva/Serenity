@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { adminStatus, DEMO, hasSession, mfaEnroll, mfaFactor, mfaVerify, myRole, openedFromReset, sb, sendReset, setNewPassword, signIn, signOut, waitForResetSession, type AdminRole } from './api';
 import { Button, ErrorNote } from './ui';
+import ErrorBoundary from './ErrorBoundary';
 import Overview from './pages/Overview';
 import Counsellors from './pages/Counsellors';
 import Content from './pages/Content';
@@ -95,12 +96,14 @@ export default function App() {
         {DEMO ? (
           <div className="demo">Sample data. This dashboard is not connected to Supabase yet: add the keys to <code>admin/.env</code> (see ADMIN_SETUP.md).</div>
         ) : null}
+        <ErrorBoundary key={current}>
         {current === 'overview' ? <Overview /> : null}
         {current === 'content' && role ? <Content role={role} /> : null}
         {current === 'counsellors' && role ? <Counsellors role={role} /> : null}
         {current === 'helplines' && role ? <Helplines role={role} /> : null}
         {current === 'admins' && role ? <Admins role={role} /> : null}
         {current === 'log' && role ? <ActivityLog role={role} /> : null}
+        </ErrorBoundary>
         <footer className="privacy">Admins never see journals, check-ins, messages, notes or anyone's personal details. Totals for groups under 10 people are hidden.</footer>
       </main>
     </div>
