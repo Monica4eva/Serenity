@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { installWebAlert } from '../lib/webAlert';
 import { ContentLoader } from '../lib/content';
 import { ActivityIndicator, AppState, View } from 'react-native';
 import { Stack, usePathname } from 'expo-router';
@@ -58,6 +59,8 @@ function Gate() {
 
 // Web app: manifest, home-screen icon and offline support (no effect in the phone apps).
 setupWebApp();
+
+installWebAlert();
 
 export default function RootLayout() {
   // Icon fonts are loaded up front so tab and button icons always show on phones.
