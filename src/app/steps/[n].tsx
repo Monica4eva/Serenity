@@ -1,5 +1,6 @@
 // One step: our own wording, three reflection questions, journal, sponsor, mark complete.
 import React from 'react';
+import { useContent } from '../../lib/content';
 import { Linking, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useApp } from '../../lib/useApp';
@@ -12,8 +13,10 @@ export default function Step() {
   const c = useDS();
   const q = useLocalSearchParams<{ n: string; share?: string }>();
   const n = Math.min(12, Math.max(1, Number(q.n) || 1));
-  const text = (t('ui.stepTexts') as unknown as string[])[n - 1];
-  const qs = t('ui.stepQs') as unknown as string[];
+  const { steps } = useContent();
+  const step = steps.find((x) => x.n === n);
+  const text = (state.language === 'tn' ? step?.tn.text : step?.en.text) ?? (t('ui.stepTexts') as unknown as string[])[n - 1];
+  const qs = (state.language === 'tn' ? step?.tn.qs : step?.en.qs)?.length ? (state.language === 'tn' ? step!.tn.qs : step!.en.qs) : (t('ui.stepQs') as unknown as string[]);
   const done = state.stepsDone.includes(n);
   const sponsor = state.contacts.find((x) => x.role === 'sponsor');
   const name = state.profile.preferredName || '';

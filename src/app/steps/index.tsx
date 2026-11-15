@@ -1,5 +1,6 @@
 // 12-Step Programme (designer's layout). Steps are written in our own words.
 import React, { useState } from 'react';
+import { useContent } from '../../lib/content';
 import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,7 +13,8 @@ export default function Steps() {
   const { t, state } = useApp();
   const c = useDS();
   const [all, setAll] = useState(false);
-  const texts = t('ui.stepTexts') as unknown as string[];
+  const { steps } = useContent();
+  const texts = steps.map((x) => (state.language === 'tn' ? x.tn.text : x.en.text));
   const done = state.stepsDone;
   const current = Array.from({ length: 12 }, (_, i) => i + 1).find((n) => !done.includes(n));
   const shown = all ? 12 : 6;

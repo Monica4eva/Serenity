@@ -178,6 +178,18 @@ Without the online service the counsellor and supporter screens show clearly mar
 people, so the team can test everything. Phone alerts need an installed build (EAS), not Expo Go
 on Android and not the web version.
 
+## Admin dashboard (separate website)
+
+The `admin` folder is a separate website for the Serenity team, connected to the same Supabase
+database: impact totals (anonymous, groups under 10 hidden), checking and verifying counsellors
+(suspending one removes their access to every client straight away), emergency numbers and
+helplines, editable app content in English and Setswana (recipes, activities, daily quotes,
+resources hub, family guide, 12-Step reflections, journal ideas: edit, add, hide, restore; the app
+merges published edits over its built-in content and keeps a copy for offline use), the admin team
+(roles: admin, clinician, editor) and an activity log that cannot be
+deleted. Admins must use an authenticator app. Admins can never read journals, check-ins,
+messages or notes. Setup and hosting: see **ADMIN_SETUP.md**.
+
 ## Languages
 
 English and Setswana. Every English string has a Setswana version in `src/locales/tn.ts`. The app will not build if one is missing, and `npm test` checks that names and numbers in each sentence match. Day and month names are in Setswana too. **The Setswana must be reviewed by fluent speakers and a clinician before launch, especially the crisis wording.** Read-aloud uses a Setswana voice only if the phone has one.

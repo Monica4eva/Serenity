@@ -1,5 +1,6 @@
 // Practical guidance for family and friends (English and Setswana), plus family support links.
 import React, { useState } from 'react';
+import { useContent } from '../../lib/content';
 import { Pressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -15,7 +16,9 @@ export default function Guide() {
   const c = useDS();
   const params = useLocalSearchParams<{ open?: string }>();
   const [open, setOpen] = useState<string | undefined>(params.open);
-  const articles: Article[] = t('care.guide');
+  const { guide } = useContent();
+  const { state } = useApp();
+  const articles: Article[] = guide.map((g) => ({ id: g.id, ...(state.language === 'tn' ? g.tn : g.en) }));
   return (
     <Page top={<TopBar title={t('care.sup.guide')} subtitle={t('care.sup.guideSub')} />}>
       {articles.map((a) => {

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { ContentLoader } from '../lib/content';
 import { ActivityIndicator, AppState, View } from 'react-native';
 import { Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -66,6 +67,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <StoreProvider>
         <SyncProvider>
+          <ContentLoader />
           <Gate />
         </SyncProvider>
       </StoreProvider>

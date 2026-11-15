@@ -1,6 +1,7 @@
 // Journal (designer's layout): date header, week strip with circles, entry cards,
 // "Write about it" pill, dashed "Add more notes", floating + and microphone buttons.
 import React, { useState } from 'react';
+import { useContent } from '../lib/content';
 import { Alert, Pressable, Share, View } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -25,6 +26,7 @@ export default function Journal() {
   const [selected, setSelected] = useState(dayKey());
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [ideas, setIdeas] = useState(false);
+  const content = useContent();
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   const byDay = (k: string) => state.journal.filter((j) => dayKey(new Date(j.at)) === k);
   const entries = byDay(selected).sort((a, b) => a.at.localeCompare(b.at));
@@ -162,11 +164,14 @@ export default function Journal() {
           <Txt color={c.navy} style={{ flex: 1 }}>{ideas ? t('journal.hideIdeas') : t('journal.ideas')}</Txt>
           <Ionicons name={ideas ? 'chevron-up' : 'chevron-down'} size={18} color={c.navy} />
         </Pressable>
-        {(ideas ? ['p1', 'p2', 'p3', 'p4'] : []).map((p) => (
-          <Pressable key={p} onPress={() => router.push({ pathname: '/mood', params: { prompt: t(`journal.${p}`) } })} accessibilityRole="button" style={{ minHeight: 44, justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: c.d ? c.border : '#E3E8EC' }}>
-            <Txt color={c.navy}>{t(`journal.${p}`)}</Txt>
-          </Pressable>
-        ))}
+        {(ideas ? content.prompts : []).map((p) => {
+          const text = state.language === 'tn' ? p.tn : p.en;
+          return (
+            <Pressable key={p.id} onPress={() => router.push({ pathname: '/mood', params: { prompt: text } })} accessibilityRole="button" style={{ minHeight: 44, justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: c.d ? c.border : '#E3E8EC' }}>
+              <Txt color={c.navy}>{text}</Txt>
+            </Pressable>
+          );
+        })}
         <View style={{ height: 120 }} />
       </Page>
       {fab('add', t('ui.newEntry'), () => router.push('/mood'), 92)}

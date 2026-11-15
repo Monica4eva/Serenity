@@ -4,13 +4,14 @@ import { Pressable, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../../lib/useApp';
-import { ACTIVITIES } from '../../content/activities';
+import { useContent } from '../../lib/content';
 import { Txt, ListenButton, announce } from '../../components/ui';
 import { Card, Page, Pill, TopBar, useDS } from '../../components/ds';
 import { BreathingCircle, FadeIn } from '../../components/Motion';
 import { ProgressBar } from '../../components/ui';
 
 export default function ActivityScreen() {
+  const { activities: ACTIVITIES } = useContent();
   const { t, state, update } = useApp();
   const c = useDS();
   const { id } = useLocalSearchParams<{ id: string }>();

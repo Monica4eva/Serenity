@@ -3,7 +3,7 @@ import React from 'react';
 import { Linking, Pressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../lib/useApp';
-import { RESOURCES } from '../lib/resources';
+import { useContent } from '../lib/content';
 import { Txt } from '../components/ui';
 import { Card, Page, SectionLabel, TopBar, useDS, DS } from '../components/ds';
 
@@ -11,6 +11,7 @@ export default function Resources() {
   const { t, state } = useApp();
   const c = useDS();
   const tn = state.language === 'tn';
+  const { resources: RESOURCES } = useContent();
   return (
     <Page top={<TopBar close title={t('res.title')} subtitle={t('res.sub')} />}>
       <Pressable onPress={() => Linking.openURL('tel:997')} accessibilityRole="button" style={{ backgroundColor: DS.helpRed, borderRadius: 12, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }}>

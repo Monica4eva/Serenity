@@ -6,7 +6,8 @@ const db = new PGlite();
 const A = '11111111-1111-1111-1111-111111111111', B = '22222222-2222-2222-2222-222222222222';
 await db.exec(`
 create schema auth;
-create table auth.users (id uuid primary key, raw_user_meta_data jsonb default '{}');
+create table auth.users (id uuid primary key, raw_user_meta_data jsonb default '{}', email text);
+create function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claims', true), ''), '{}')::jsonb $$;
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.sub', true), '')::uuid $$;
 create role anon; create role authenticated;
 -- Like Supabase: new tables are granted to anon and authenticated by default; migrations then revoke.
@@ -15,12 +16,12 @@ alter default privileges in schema public grant all on tables to anon, authentic
 `);
 const dir = new URL('../migrations/', import.meta.url);
 for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.sql')).sort()) await db.exec(fs.readFileSync(new URL(f, dir), 'utf8'));
-await db.exec(`grant usage on schema auth to anon, authenticated; grant execute on function auth.uid() to anon, authenticated;`);
+await db.exec(`grant usage on schema auth to anon, authenticated; grant execute on function auth.uid() to anon, authenticated; grant execute on function auth.jwt() to anon, authenticated;`);
 await db.exec(`insert into auth.users (id, raw_user_meta_data) values ('${A}', '{"preferred_name":"Mompati"}'), ('${B}', '{}'), ('33333333-3333-3333-3333-333333333333', '{"full_name":"Neo Molefe","name":"Neo Molefe"}');`);
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) { pass++; } else { fail++; console.log('FAIL', m); } };
-const as = async (uid, sql) => {
-  await db.exec(`reset role; set request.jwt.sub = '${uid ?? ''}'; set role ${uid ? 'authenticated' : 'anon'};`);
+const as = async (uid, sql, aal = 'aal1') => {
+  await db.exec(`reset role; set request.jwt.sub = '${uid ?? ''}'; set request.jwt.claims = '{"aal":"${aal}"}'; set role ${uid ? 'authenticated' : 'anon'};`);
   try { return { rows: (await db.query(sql)).rows }; } catch (e) { return { error: e.message }; }
   finally { await db.exec('reset role'); }
 };
@@ -242,5 +243,95 @@ r = await as(X, `select * from public.accept_care_invite('${supCode}','x')`);
 ok(!!r.error && /Too many/.test(r.error), 'guessing codes is blocked after 10 tries an hour');
 r = await as(null, `select * from public.care_links`);
 ok(!!r.error || r.rows?.length === 0, 'anonymous sees no care links');
+
+// ---------- admin dashboard ----------
+const AD = '88888888-8888-8888-8888-888888888888', ED = '99999999-9999-9999-9999-999999999999';
+await db.exec(`insert into auth.users (id, email) values ('${AD}','boss@serenity.bw'),('${ED}','editor@serenity.bw')`);
+await db.exec(`update auth.users set email='doc@clinic.bw' where id='${P}'`);
+r = await as(AD, `insert into public.admins (user_id, role) values ('${AD}','admin')`, 'aal2');
+ok(!!r.error, 'nobody can make themselves an admin');
+await db.exec(`insert into public.admins (user_id, role, display_name) values ('${AD}','admin','Boss')`); // done by hand in the SQL editor
+r = await as(AD, `select public.admin_status() s`, 'aal1');
+ok(r.rows?.[0]?.s === 'needs_mfa', 'admin without the second step is asked for it');
+r = await as(AD, `select public.admin_impact()`, 'aal1');
+ok(!!r.error, 'admin functions refuse without MFA');
+r = await as(A, `select public.admin_impact()`, 'aal2');
+ok(!!r.error, 'ordinary users cannot see admin totals');
+r = await as(P, `select * from public.admin_list_professionals()`, 'aal2');
+ok(!!r.error, 'counsellors cannot use admin functions');
+r = await as(AD, `select public.admin_impact() j`, 'aal2');
+ok(!r.error && typeof r.rows?.[0]?.j?.members === 'number', 'admin sees impact totals ' + r.error);
+const imp = r.rows?.[0]?.j;
+ok(imp && imp.retention?.every((x) => x.pct === null), 'groups under 10 people are hidden');
+ok(imp && !JSON.stringify(imp).includes(B) && !JSON.stringify(imp).includes('better today'), 'impact has no personal ids or text');
+r = await as(AD, `select * from public.admin_list_professionals()`, 'aal2');
+ok(!r.error && r.rows?.some((x) => x.email === 'doc@clinic.bw' && x.review_status === 'pending'), 'admin sees counsellors waiting for checks ' + r.error);
+r = await as(AD, `select public.admin_review_professional('${P}','verified','BHPC checked')`, 'aal2');
+ok(!r.error, 'admin verifies a counsellor ' + r.error);
+r = await as(P, `select verified, review_status from public.care_profiles`, 'aal1');
+ok(r.rows?.[0]?.verified === true && r.rows[0].review_status === 'verified', 'counsellor shows as verified');
+r = await as(P, `update public.care_profiles set review_status='verified'`, 'aal1');
+ok(!!r.error, 'counsellors cannot change their own check status');
+// suspension removes access
+r = await as(M, `select * from public.create_care_invite('professional','Dr K','Neo','{"alerts":true,"trends":true}'::jsonb)`);
+const code2 = r.rows?.[0]?.code, link2 = r.rows?.[0]?.link_id;
+r = await as(P, `select * from public.accept_care_invite('${code2}','Dr K')`);
+await as(M, `insert into public.shared_summaries (link_id, member_id, payload) values ('${link2}','${M}','{"days":3}'::jsonb)`);
+r = await as(P, `select * from public.shared_summaries where link_id='${link2}'`);
+ok(r.rows?.length === 1, 'verified counsellor reads summary');
+await as(AD, `select public.admin_review_professional('${P}','suspended','complaint')`, 'aal2');
+r = await as(P, `select * from public.shared_summaries where link_id='${link2}'`);
+ok(r.rows?.length === 0, 'suspended counsellor loses access straight away');
+// emergency numbers
+r = await as(A, `update public.emergency_numbers set number='000' where id='ambulance' returning id`, 'aal2');
+ok(!!r.error || r.rows?.length === 0, 'ordinary users still cannot edit numbers');
+r = await as(AD, `update public.emergency_numbers set verified=true, checked_at=now() where id='ambulance' returning id`, 'aal2');
+ok(!r.error && r.rows?.length === 1, 'admin marks a number as checked ' + r.error);
+r = await as(AD, `select action from public.admin_actions order by id`, 'aal2');
+ok(r.rows?.some((x) => x.action === 'emergency_number_update') && r.rows?.some((x) => x.action === 'professional_verified'), 'admin actions are logged');
+await as(AD, `delete from public.admin_actions`, 'aal2');
+r = await as(AD, `select count(*)::int n from public.admin_actions`, 'aal2');
+ok(r.rows?.[0]?.n >= 2, 'the activity log cannot be wiped');
+// admins
+r = await as(AD, `select public.admin_add('editor@serenity.bw','editor','Ed')`, 'aal2');
+ok(!r.error, 'admin adds an editor ' + r.error);
+r = await as(ED, `select * from public.admin_list_professionals()`, 'aal2');
+ok(!!r.error, 'editors cannot check counsellors');
+r = await as(ED, `select public.admin_impact() j`, 'aal2');
+ok(!r.error, 'editors can see anonymous totals');
+r = await as(ED, `update public.emergency_numbers set number='1' where id='fire' returning id`, 'aal2');
+ok(!!r.error || r.rows?.length === 0, 'editors cannot change emergency numbers');
+r = await as(ED, `select public.admin_add('x@y.z','admin','x')`, 'aal2');
+ok(!!r.error, 'only full admins add admins');
+r = await as(AD, `select public.admin_remove('${AD}')`, 'aal2');
+ok(!!r.error, 'an admin cannot remove themselves');
+r = await as(AD, `select * from public.journal_entries`, 'aal2');
+ok(r.rows?.length === 0, 'admins cannot read journals');
+r = await as(AD, `select * from public.checkins`, 'aal2');
+ok(r.rows?.length === 0, 'admins cannot read check-ins');
+r = await as(AD, `select * from public.care_messages`, 'aal2');
+ok(r.rows?.length === 0, 'admins cannot read messages');
+
+// ---------- editable content ----------
+r = await as(ED, `insert into public.content_items (type, item_key, data, status) values ('recipe','seswaa','{"set":"botswana","en":{"title":"Seswaa"},"tn":{"title":"Seswaa"}}','draft')`, 'aal2');
+ok(!r.error, 'editor adds a draft recipe ' + r.error);
+r = await as(null, `select * from public.content_items`);
+ok(!r.error && r.rows?.length === 0, 'drafts are not public');
+r = await as(ED, `update public.content_items set status='published' where item_key='seswaa' returning updated_by`, 'aal2');
+ok(!r.error && r.rows?.[0]?.updated_by === ED, 'editor publishes; change is stamped with who did it ' + r.error);
+r = await as(null, `select item_key from public.content_items`);
+ok(r.rows?.length === 1, 'published content is readable without logging in');
+r = await as(A, `insert into public.content_items (type, item_key, data, status) values ('quote','1','{"en":"x","tn":"y"}','published')`, 'aal2');
+ok(!!r.error, 'ordinary users cannot change content');
+r = await as(A, `update public.content_items set status='hidden' returning item_key`, 'aal2');
+ok(!!r.error || r.rows?.length === 0, 'ordinary users cannot hide content');
+r = await as(ED, `insert into public.content_items (type, item_key, data) values ('recipe','../etc','{}')`, 'aal2');
+ok(!!r.error, 'content keys are checked');
+r = await as(ED, `insert into public.content_items (type, item_key, data) values ('virus','x','{}')`, 'aal2');
+ok(!!r.error, 'only known content types');
+r = await as(AD, `select action, target from public.admin_actions where action like 'content_%'`, 'aal2');
+ok(r.rows?.some((x) => x.action === 'content_published' && x.target === 'recipe:seswaa'), 'content changes are logged');
+r = await as(ED, `delete from public.content_items where item_key='seswaa' returning item_key`, 'aal2');
+ok(!r.error && r.rows?.length === 1, 'editor restores the original by removing the edit ' + r.error);
 console.log(`schema tests: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

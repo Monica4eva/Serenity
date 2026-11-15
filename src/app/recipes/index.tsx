@@ -3,16 +3,18 @@ import { Pressable, ScrollView, View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../../lib/useApp';
-import { recipesFor, type Recipe } from '../../content/recipes';
+import type { Recipe } from '../../content/recipes';
+import { recipesFor, useContent } from '../../lib/content';
 import { Txt } from '../../components/ui';
 import { Card, Page, TopBar, useDS } from '../../components/ds';
 
 export default function Recipes() {
+  const content = useContent();
   const { t, state } = useApp();
   const c = useDS();
   const tn = state.language === 'tn';
   const [tag, setTag] = useState<'all' | Recipe['tag']>('all');
-  const list = recipesFor(state.language).filter((r) => tag === 'all' || r.tag === tag);
+  const list = recipesFor(content, state.language).filter((r) => tag === 'all' || r.tag === tag);
   return (
     <Page top={<TopBar close title={t('recipes.title')} subtitle={t('recipes.sub')} />}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>

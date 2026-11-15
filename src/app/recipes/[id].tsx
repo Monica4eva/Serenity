@@ -4,15 +4,16 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../../lib/useApp';
 import { dayKey } from '../../lib/dates';
-import { findRecipe, recipesFor } from '../../content/recipes';
+import { findRecipe, recipesFor, useContent } from '../../lib/content';
 import { Txt, ListenButton, announce } from '../../components/ui';
 import { Card, Page, Pill, TopBar, useDS } from '../../components/ds';
 
 export default function RecipeScreen() {
+  const content = useContent();
   const { t, state, update } = useApp();
   const c = useDS();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const r = findRecipe(id) ?? recipesFor(state.language)[0];
+  const r = findRecipe(content, id) ?? recipesFor(content, state.language)[0];
   const L = state.language === 'tn' && r.tn ? r.tn : r.en;
   const [ticked, setTicked] = useState<number[]>([]);
   const toggle = (n: number) => setTicked(ticked.includes(n) ? ticked.filter((x) => x !== n) : [...ticked, n]);

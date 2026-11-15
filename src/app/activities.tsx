@@ -5,13 +5,15 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../lib/useApp';
 import { dayKey } from '../lib/dates';
-import { ACTIVITIES, type ActivityCat, type GuidedActivity } from '../content/activities';
+import type { ActivityCat, GuidedActivity } from '../content/activities';
+import { useContent } from '../lib/content';
 import { Txt } from '../components/ui';
 import { Card, Page, SectionLabel, TopBar, useDS, DS } from '../components/ds';
 
 const CAT_TINT: Record<ActivityCat, keyof typeof DS.tints> = { calm: 'blue', move: 'mint', connect: 'peach', spirit: 'lavender', nourish: 'yellow', create: 'sky' };
 
 export default function Activities() {
+  const { activities: ACTIVITIES } = useContent();
   const { t, state } = useApp();
   const c = useDS();
   const tn = state.language === 'tn';

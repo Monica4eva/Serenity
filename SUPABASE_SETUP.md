@@ -17,7 +17,9 @@ About 20 minutes. You only do this once. Until you finish, the app keeps working
 3. Click **Run**. You should see "Success. No rows returned".
 4. Do the same with `supabase/migrations/20261115000000_security.sql` (security hardening).
 5. Then the same with `supabase/migrations/20261116000000_care_team.sql` (counsellors, family and friends). Run the three files in this order.
-6. Check: **Table Editor** now lists tables such as `profiles`, `checkins`, `journal_entries` and `emergency_numbers` (with 5 rows).
+6. Then `supabase/migrations/20261117000000_admin.sql` (the admin dashboard), and then
+   `supabase/migrations/20261118000000_content.sql` (editable app content). See ADMIN_SETUP.md.
+7. Check: **Table Editor** now lists tables such as `profiles`, `checkins`, `journal_entries` and `emergency_numbers` (with 5 rows).
 
 ## 3. Sign-in settings
 

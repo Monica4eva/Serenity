@@ -12,7 +12,7 @@ import { Txt } from '../../components/ui';
 import { Card, Page, useDS } from '../../components/ds';
 import { CelebrationArt, FadeIn, Pop } from '../../components/Motion';
 import { notificationsFor } from '../../lib/notify';
-import { quoteFor } from '../../content/quotes';
+import { todaysQuote, useContent } from '../../lib/content';
 
 const FOCUS_LABEL: Record<string, string> = {
   halt: 'ui.focusHalt',
@@ -42,7 +42,8 @@ export default function Today() {
   const words = state.journal.reduce((a, j) => a + (j.text.trim() ? j.text.trim().split(/\s+/).length : 0), 0);
   const focus = focusForDay(state, today);
   const isMilestone = MILESTONES.includes(days);
-  const quote = quoteFor(new Date(), state.language);
+  const content = useContent();
+  const quote = todaysQuote(content, state.language);
   // Messages and next sessions from the care team.
   const careNotes = state.care.links
     .filter((l) => l.status === 'active')
