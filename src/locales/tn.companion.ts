@@ -131,7 +131,9 @@ const companion: typeof enCompanion = {
   whyBother: {
     line: 'Go a utlwala gore o ikutlwe o kgobegile. Diphetogo tse dinnye gantsi di bonala pele re di utlwa.',
     winDays: 'O ntse o tswelela le go fola ga gago malatsi a le {{n}}. Seo se a bala.',
+    winDays_one: 'O ntse o tswelela le go fola ga gago letsatsi le le {{n}}. Seo se a bala.',
     winCheckins: 'O tlhatlhobile makgetlo a le {{n}} mme o kwadile dikwalo di le {{j}}. Ke maiteko a mmatota.',
+    winCheckins_one: 'O tlhatlhobile gangwe mme o kwadile dikwalo di le {{j}}. Ke maiteko a mmatota.',
   },
   dealer: {
     line: 'Ke kgato e e maatla ya go itshireletsa. Ke eng se se ka dirang gore go nne bonolo go e dira?',

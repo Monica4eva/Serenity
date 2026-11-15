@@ -1,6 +1,7 @@
 // HALT Daily Check-In (designer's layout): greeting, coloured icon rows with inline
 // No / A little / Yes chips, insights card, green Save button.
 import React, { useState } from 'react';
+import { displayName } from '../lib/names';
 import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -44,7 +45,7 @@ export default function Halt() {
   const opts = state.settings.simplePrompts
     ? [{ v: 0, l: t('common.no') }, { v: 2, l: t('common.yes') }]
     : [{ v: 0, l: t('common.no') }, { v: 1, l: t('common.aLittle') }, { v: 2, l: t('common.yes') }];
-  const name = state.profile.preferredName || state.account?.fullName?.split(' ')[0] || '';
+  const name = displayName(state);
   const tod = timeOfDay();
   const greet = t(tod === 'morning' ? 'ui.greetMorning' : tod === 'afternoon' ? 'ui.greetAfternoon' : 'ui.greetEvening');
 

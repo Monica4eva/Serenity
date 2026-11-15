@@ -1,6 +1,7 @@
 // Crisis hub (Sections 5.7 and 8). Reachable from every screen, before login,
 // while the app is locked and offline (numbers are stored on the device).
 import React, { useEffect, useRef, useState } from 'react';
+import { displayName } from '../lib/names';
 import { Alert, Linking, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,7 +22,7 @@ export default function Crisis() {
   const [secs, setSecs] = useState<number | null>(null);
   const [clearStep, setClearStep] = useState(0);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const name = state.profile.preferredName || '';
+  const name = displayName(state);
   const emergencyContacts = state.contacts.filter((c) => c.isEmergency);
   const supportPerson = state.contacts.find((c) => c.role === 'sponsor') ?? state.contacts[0];
   const logo = useLogoState();

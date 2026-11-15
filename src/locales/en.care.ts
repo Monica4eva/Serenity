@@ -129,6 +129,7 @@ const care = {
     showSample: 'Show sample clients',
     hideSample: 'Hide sample clients',
     days: '{{n}} days',
+    days_one: '{{n}} day',
     waiting: 'Waiting for their first update',
     updated: 'Updated {{when}}',
     unread: '{{n}} new',
@@ -201,6 +202,7 @@ const care = {
     emergency: 'Call ambulance 997',
     days: 'days on their journey',
     next: 'Next milestone: {{n}} days',
+    next_one: 'Next milestone: {{n}} day',
     reached: 'Milestones reached',
     encourage: 'Send encouragement',
     templates: [

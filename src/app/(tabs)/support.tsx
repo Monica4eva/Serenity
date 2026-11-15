@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { displayName } from '../../lib/names';
 import { Linking, View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,7 +13,7 @@ export default function Support() {
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState('');
   const [when, setWhen] = useState('');
-  const name = state.profile.preferredName || '';
+  const name = displayName(state);
   const talkTo = state.contacts.find((c) => c.consentLevel !== 'none') ?? state.contacts[0];
   const appts = [...state.appointments].sort((a, b) => a.when.localeCompare(b.when));
 

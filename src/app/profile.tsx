@@ -1,5 +1,6 @@
 // Profile menu (designer's layout).
 import React from 'react';
+import { displayName } from '../lib/names';
 import { Alert, Image, View } from 'react-native';
 import { router } from 'expo-router';
 import { useApp } from '../lib/useApp';
@@ -13,9 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 export default function Profile() {
   const { t, state, update } = useApp();
   const c = useDS();
-  const full = state.account?.fullName || state.profile.preferredName || '';
-  const parts = full.trim().split(/\s+/);
-  const display = parts.length > 1 ? `${parts[0]} ${parts[parts.length - 1][0]}.` : full;
+  const display = displayName(state);
   const days = daysBetween(state.recoveryStart) + 1;
 
   const logOut = () =>

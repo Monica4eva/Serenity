@@ -1,5 +1,6 @@
 // One step: our own wording, three reflection questions, journal, sponsor, mark complete.
 import React from 'react';
+import { displayName } from '../../lib/names';
 import { useContent } from '../../lib/content';
 import { Linking, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -19,7 +20,7 @@ export default function Step() {
   const qs = (state.language === 'tn' ? step?.tn.qs : step?.en.qs)?.length ? (state.language === 'tn' ? step!.tn.qs : step!.en.qs) : (t('ui.stepQs') as unknown as string[]);
   const done = state.stepsDone.includes(n);
   const sponsor = state.contacts.find((x) => x.role === 'sponsor');
-  const name = state.profile.preferredName || '';
+  const name = displayName(state);
   const today = dayKey();
   const markReading = () => update((s) => ({ ...s, focus: { ...s.focus, [today]: Array.from(new Set([...(s.focus[today] ?? []), 'reading'])) } }));
 

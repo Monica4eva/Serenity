@@ -130,7 +130,9 @@ const companion = {
   whyBother: {
     line: 'It makes sense to feel discouraged. Small changes often show up before we feel them.',
     winDays: "You've stayed with your recovery for {{n}} days. That counts.",
+    winDays_one: "You've stayed with your recovery for {{n}} day. That counts.",
     winCheckins: "You've checked in {{n}} times and written {{j}} journal entries. That is real effort.",
+    winCheckins_one: "You've checked in once and written {{j}} journal entries. That is real effort.",
   },
   dealer: {
     line: "That's a strong protective move. What would make it feel safer to do?",

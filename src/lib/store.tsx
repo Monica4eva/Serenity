@@ -269,6 +269,31 @@ export function useStore() {
   return ctx;
 }
 
+/**
+ * A different person is signing up or logging in on this phone: start with a clean slate so
+ * one person's recovery data never mixes with another's. Keeps only device preferences
+ * (language, role just chosen, text size, theme, accessibility) and the emergency numbers.
+ */
+export function freshForNewPerson(s: State): State {
+  const base = initialState();
+  return {
+    ...base,
+    language: s.language,
+    languageChosen: s.languageChosen,
+    appRole: s.appRole,
+    emergencyNumbers: s.emergencyNumbers,
+    settings: { ...s.settings, appLock: false, pinHash: undefined },
+  };
+}
+
+/** True when the phone holds a different person's account than the one now signing in. */
+export function isDifferentPerson(s: State, userId?: string, email?: string): boolean {
+  const a = s.account;
+  if (!a) return false;
+  if (a.userId && userId) return a.userId !== userId;
+  return !!email && a.email.toLowerCase() !== email.toLowerCase();
+}
+
 export function addConsent(s: State, type: ConsentType, granted: boolean, contactId?: string): State {
   return { ...s, consents: [...s.consents, { type, granted, version: TERMS_VERSION, at: new Date().toISOString(), contactId }] };
 }

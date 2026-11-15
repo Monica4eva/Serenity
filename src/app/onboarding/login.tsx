@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { freshForNewPerson, isDifferentPerson } from '../../lib/store';
 import { homeRoute, isViewer } from '../../lib/roles';
 import { fetchMyRole } from '../../lib/care';
 import { Alert, Pressable } from 'react-native';
@@ -51,15 +52,22 @@ export default function Login() {
         return;
       }
       // Data downloads in the background (SyncProvider). Mark this phone as logged in.
-      update((s) => ({
-        ...s,
-        loggedIn: true,
-        account: s.account ?? { fullName: '', email: id.trim().toLowerCase(), createdAt: new Date().toISOString(), userId: r.userId },
-      }));
+      const email = id.trim().toLowerCase();
+      const other = isDifferentPerson(state, r.userId, email);
+      update((prev) => {
+        // Another person's data on this phone must not mix with this account.
+        const s = other ? freshForNewPerson({ ...prev, appRole: undefined }) : prev;
+        return {
+          ...s,
+          loggedIn: true,
+          account: !other && s.account ? { ...s.account, userId: s.account.userId ?? r.userId } : { fullName: '', email, createdAt: new Date().toISOString(), userId: r.userId },
+        };
+      });
       // On a new phone, find out whether this account belongs to a counsellor or supporter.
-      const role = state.appRole ?? (await fetchMyRole());
+      const role = (other ? null : state.appRole) ?? (await fetchMyRole());
       if (role && role !== state.appRole) update((s) => ({ ...s, appRole: role }));
-      router.replace(homeRoute({ appRole: role ?? undefined }));
+      // A member whose setup is not on this phone yet goes to "/" which waits for the download.
+      router.replace(role && role !== 'member' ? homeRoute({ appRole: role }) : other || !state.onboarded ? '/' : '/(tabs)');
       return;
     }
     const a = state.account;

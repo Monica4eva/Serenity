@@ -40,3 +40,13 @@ test('guided activities have steps in both languages', () => {
   assert.ok(ACTIVITIES.length >= 15);
   for (const a of ACTIVITIES) assert.equal(a.en.steps.length, a.tn.steps.length, a.id);
 });
+
+import { translate } from '../src/lib/i18n.ts';
+test('counts read correctly at 1 in both languages', () => {
+  assert.equal(translate('en', 'ui.inRecoveryDays', { n: 1 }), 'In Recovery - 1 Day');
+  assert.equal(translate('en', 'ui.inRecoveryDays', { n: 5 }), 'In Recovery - 5 Days');
+  assert.equal(translate('tn', 'ui.inRecoveryDays', { n: 1 }), 'Mo go Foleng - Letsatsi le le 1');
+  assert.equal(translate('tn', 'ui.inRecoveryDays', { n: 5 }), 'Mo go Foleng - Malatsi a le 5');
+  assert.equal(translate('en', 'ui.entriesN', { n: 1 }), '1 entry');
+  assert.equal(translate('tn', 'health.minutes', { n: 1 }), 'Motsotso o le 1');
+});

@@ -22,7 +22,7 @@ export default function Consent() {
     router.push('/onboarding/terms');
   };
   const link = (label: string) => (
-    <Txt color={c.navy} style={{ textDecorationLine: 'underline' }} onPress={() => router.push('/onboarding/terms')} accessibilityRole="link">
+    <Txt color={c.navy} style={{ textDecorationLine: 'underline' }} onPress={() => router.push('/onboarding/terms?review=1')} accessibilityRole="link">
       {label}
     </Txt>
   );

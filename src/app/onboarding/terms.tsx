@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { homeRoute, isViewer } from '../../lib/roles';
 import { saveCareProfile } from '../../lib/care';
 import { Pressable, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useApp } from '../../lib/useApp';
 import { TERMS_VERSION } from '../../lib/store';
 import { ListenButton, Txt } from '../../components/ui';
@@ -11,6 +11,8 @@ import { Card, Heading, Page, Pill, Seg, SquareCheck, TopBar, useDS } from '../.
 export default function Terms() {
   const { t, update, state } = useApp();
   const c = useDS();
+  // review=1: opened just to read (from Settings or a link). Otherwise: part of signing up.
+  const { review } = useLocalSearchParams<{ review?: string }>();
   const [tab, setTab] = useState('terms');
   const [more, setMore] = useState(false);
   const [a1, setA1] = useState(false);
@@ -20,11 +22,12 @@ export default function Terms() {
   const shown = more ? lines : lines.slice(0, tab === 'terms' ? 7 : 8);
   const accept = () => {
     update((s) => ({ ...s, termsVersionAccepted: TERMS_VERSION }));
-    if (state.onboarded) router.back();
-    else if (isViewer(state)) {
+    if (review) return router.canGoBack() ? router.back() : router.replace('/');
+    if (isViewer(state)) {
       if (state.account) saveCareProfile(state.appRole!, state.profile.preferredName || state.account.fullName).catch(() => {});
       router.replace(homeRoute(state));
-    } else router.push('/onboarding/appearance');
+    } else if (state.onboarded) router.replace('/(tabs)');
+    else router.push('/onboarding/appearance');
   };
   const isHeading = (l: string) => /^\d+\.\s/.test(l) || /^[a-z]\.\s/.test(l);
   return (

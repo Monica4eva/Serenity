@@ -1,5 +1,6 @@
 // HELP NOW (designer's layout). Red call button, other ways to get help, plus the guided support modes.
 import React from 'react';
+import { displayName } from '../lib/names';
 import { Linking, Alert, View } from 'react-native';
 import { router } from 'expo-router';
 import { useApp } from '../lib/useApp';
@@ -13,7 +14,7 @@ export default function Help() {
   const c = useDS();
   const pro = state.contacts.find((x) => x.role === 'counsellor') ?? state.contacts.find((x) => x.role === 'healthcare');
   const supporter = state.contacts.find((x) => x.role === 'sponsor') ?? state.contacts.find((x) => x.role === 'family') ?? state.contacts[0];
-  const name = state.profile.preferredName || '';
+  const name = displayName(state);
 
   const callPro = () => {
     update((s) => ({ ...s, safetyEvents: [...s.safetyEvents, { at: new Date().toISOString(), kind: 'help_call_counsellor' }] }));

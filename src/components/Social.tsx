@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { freshForNewPerson, isDifferentPerson } from '../lib/store';
 import { ActivityIndicator, Alert, Pressable, View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -27,15 +28,20 @@ export default function SocialRow({ small }: { small?: boolean }) {
       if (!r.cancelled) Alert.alert(NAMES[p], /network|fetch/i.test(r.message) ? t('login.offline') : t('ui.socialFailed', { provider: NAMES[p] }));
       return;
     }
-    update((s) => ({
+    const other = isDifferentPerson(state, r.userId, r.email);
+    update((prev) => {
+      // Another person's data on this phone must not mix with this account.
+      const s = other ? freshForNewPerson({ ...prev, appRole: undefined }) : prev;
+      return {
       ...s,
       loggedIn: true,
       account: { ...(s.account ?? {}), fullName: r.fullName || s.account?.fullName || '', email: r.email || s.account?.email || '', userId: r.userId, provider: p, createdAt: s.account?.createdAt ?? new Date().toISOString() },
       profile: { ...s.profile, preferredName: s.profile.preferredName || r.fullName.split(' ')[0] || '' },
-    }));
+      };
+    });
     // New people still read and accept the terms and consent; returning people go straight in
     // (their data downloads in the background).
-    router.replace(r.isNew || !state.termsVersionAccepted ? '/onboarding/consent' : '/(tabs)');
+    router.replace(r.isNew || other || !state.termsVersionAccepted ? '/onboarding/consent' : '/(tabs)');
   };
 
   const btn = (p: OAuthProvider, icon: any, color: string) => (

@@ -1,4 +1,5 @@
 import React from 'react';
+import { displayName } from '../../lib/names';
 import { Share, View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -46,7 +47,7 @@ export default function Insight() {
   const exportSummary = () => {
     const none = t('insight.sum.none');
     const lines = [
-      t('insight.sum.title', { name: state.profile.preferredName || t('insight.sum.me') }),
+      t('insight.sum.title', { name: displayName(state) || t('insight.sum.me') }),
       t('insight.sum.days', { n: Math.round((Date.now() - new Date(state.recoveryStart).getTime()) / 86400000) }),
       t('insight.sum.checkins', { n: streak }),
       t('insight.sum.levels', { list: levels.map((l) => `${dayMonthShort(new Date(l.at), state.language)} ${t(`levels.${l.level}`)}`).join(', ') || none }),

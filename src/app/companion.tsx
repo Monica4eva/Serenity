@@ -1,5 +1,6 @@
 // Serenity Guide chat screen. The conversation logic lives in src/lib/companion.ts.
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { displayName } from '../lib/names';
 import { AccessibilityInfo, KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, TextInput, View, Image } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,7 +19,7 @@ type Line = { id: string; from: 'bot' | 'me'; text: string };
 export default function Companion() {
   const { t, state, update } = useApp();
   const c = useDS();
-  const name = state.profile.preferredName || state.account?.fullName?.split(' ')[0] || '';
+  const name = displayName(state);
   const ctx: Ctx = useMemo(
     () => ({
       name,

@@ -41,6 +41,7 @@ const en = {
     prevWeek: 'Previous week',
     nextWeek: 'Next week',
     dayEntries: '{{date}}, {{n}} entries',
+    dayEntries_one: '{{date}}, {{n}} entry',
     noData: 'no data',
   },
   dates: {
@@ -116,7 +117,7 @@ const en = {
     acceptTerms: 'I have read and accept the Terms of Use',
     acceptPrivacy: 'I have read and accept the Privacy Policy',
     acceptContinue: 'Accept and Continue',
-    draft: 'DRAFT. This text must be completed and reviewed by a qualified lawyer before launch.',
+    draft: 'Pilot version. These terms will be reviewed by a qualified lawyer before public launch.',
     termsBody:
       'Introduction. Project Serenity is a wellbeing and recovery support app. It is not a medical device and does not diagnose or treat any condition.\n\nEligibility. You must be 18 or older to use the app.\n\nUse of the app. The alert levels (Green, Amber, Red) are support prompts, not medical assessments. In an emergency, call 997 for an ambulance or 999 for the police.\n\nYour responsibilities. Keep your login and PIN private. Only add support contacts who have agreed to be contacted.\n\nChanges. We will tell you about important changes and ask you to accept them again.\n\nContact. Contact details will be added before launch.',
     privacyBody:
@@ -263,6 +264,7 @@ const en = {
     keepGoing: 'Keep going!',
     milestone: 'You reached a milestone. Well done!',
     experience: 'You have {{n}} days of experience to build on.',
+    experience_one: 'You have {{n}} day of experience to build on.',
     journalStreak: 'Entries: {{entries}} · Words: {{words}}',
     journalWeek: 'You wrote on {{n}} of 7 days this week',
     focus: "Today's Focus",
@@ -289,6 +291,7 @@ const en = {
   relapse: {
     title: 'Thank you for being honest',
     body: 'A relapse does not erase your progress. You have {{n}} days of experience to build on. First, are you safe right now?',
+    body_one: 'A relapse does not erase your progress. You have {{n}} day of experience to build on. First, are you safe right now?',
     safe: 'Yes, I am safe',
     notSafe: 'No, I need help now',
     reset: 'Start a new count from today',
@@ -537,6 +540,7 @@ const en = {
     glasses: '{{n}} of 8 glasses',
     activity: 'Activity',
     minutes: '{{n}} minutes',
+    minutes_one: '{{n}} minute',
     moodCard: 'Mood',
     cravingsCard: 'Cravings',
     heart: 'Resting heart rate',
@@ -565,7 +569,9 @@ const en = {
     patternCravingDay: 'Cravings are strongest on {{day}}.',
     patternSleepCraving: 'Cravings tend to be stronger after a short night of sleep.',
     patternLonely: 'Loneliness came up {{n}} times this month. Connection may help.',
+    patternLonely_one: 'Loneliness came up once this month. Connection may help.',
     patternTired: 'Tiredness came up {{n}} times this month. Rest may help.',
+    patternTired_one: 'Tiredness came up once this month. Rest may help.',
     patternStreak: 'You checked in on {{n}} of the last 7 days. That consistency matters.',
     sum: {
       title: 'Project Serenity summary for {{name}}',

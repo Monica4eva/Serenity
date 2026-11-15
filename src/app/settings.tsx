@@ -227,7 +227,7 @@ export default function Settings() {
         {consentRows.map((c) => (
           <Toggle key={c.type} label={c.label} value={latestConsent(state, c.type)} onChange={(v) => update((x) => addConsent(x, c.type, v))} />
         ))}
-        <Button variant="ghost" title={t('consent.readTerms')} onPress={() => router.push('/onboarding/terms')} />
+        <Button variant="ghost" title={t('consent.readTerms')} onPress={() => router.push('/onboarding/terms?review=1')} />
       </Card>
       ) : null}
 

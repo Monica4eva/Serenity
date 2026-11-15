@@ -49,6 +49,7 @@ const tn: Strings = {
     prevWeek: 'Beke e e fetileng',
     nextWeek: 'Beke e e tlang',
     dayEntries: '{{date}}, dikwalo di le {{n}}',
+    dayEntries_one: '{{date}}, sekwalo se le {{n}}',
     noData: 'ga go na tshedimosetso',
   },
   dates: {
@@ -124,7 +125,7 @@ const tn: Strings = {
     acceptTerms: 'Ke badile mme ke amogela Melawana ya Tiriso',
     acceptPrivacy: 'Ke badile mme ke amogela Pholisi ya Sephiri',
     acceptContinue: 'Amogela o tswelele',
-    draft: 'KGATISO YA TEKO. Mafoko a a tshwanetse go feleletswa le go tlhatlhobiwa ke ramolao yo o rutegileng pele ga go simolola.',
+    draft: 'Kgatiso ya teko. Melawana e e tla sekasekwa ke mmueledi yo o nang le bokgoni pele app e phatlalatswa.',
     termsBody:
       'Matseno. Project Serenity ke app ya tshegetso ya boitekanelo le go fola. Ga se sedirisiwa sa kalafi, mme ga e tlhathobe kgotsa ga e alafe bolwetse bope.\n\nBao ba letleletsweng. O tshwanetse go bo o na le dingwaga di le 18 kgotsa go feta.\n\nTiriso ya app. Maemo a temoso (Tala, Bosetlha, Khibidu) ke dikgakololo tsa tshegetso, ga se ditlhatlhobo tsa ngaka. Mo tshoganyetsong, leletsa 997 go bona ambulense kgotsa 999 go bona mapodise.\n\nDitshwanelo tsa gago. Boloka lefoko la sephiri le PIN ya gago e le sephiri. Tsenya fela batho ba ba dumetseng go ikgolaganngwa le bone.\n\nDiphetogo. Re tla go itsise ka diphetogo tse dikgolo mme re go kope go di amogela gape.\n\nGo ikgolaganya le rona. Dintlha di tla tsenngwa pele ga go simolola.',
     privacyBody:
@@ -271,6 +272,7 @@ const tn: Strings = {
     keepGoing: 'Tswelela!',
     milestone: 'O fitlheletse kgato e kgolo. O dirile sentle!',
     experience: 'O na le maitemogelo a malatsi a le {{n}} a o ka agelang mo go one.',
+    experience_one: 'O na le maitemogelo a letsatsi le le {{n}} a o ka agelang mo go one.',
     journalStreak: 'Dikwalo: {{entries}} · Mafoko: {{words}}',
     journalWeek: 'O kwadile mo malatsing a le {{n}} go 7 beke e',
     focus: 'Se o se tsepamisang gompieno',
@@ -297,6 +299,7 @@ const tn: Strings = {
   relapse: {
     title: 'Re a leboga ka boammaaruri jwa gago',
     body: 'Go boela morago ga go phimole kgatelopele ya gago. O na le maitemogelo a malatsi a le {{n}} a o ka agelang mo go one. Sa ntlha, a o babalesegile jaanong?',
+    body_one: 'Go boela morago ga go phimole kgatelopele ya gago. O na le maitemogelo a letsatsi le le {{n}} a o ka agelang mo go one. Sa ntlha, a o babalesegile jaanong?',
     safe: 'Ee, ke babalesegile',
     notSafe: 'Nnyaa, ke tlhoka thuso jaanong',
     reset: 'Simolola go bala sešwa go tloga gompieno',
@@ -551,6 +554,7 @@ const tn: Strings = {
     glasses: 'Digalase di le {{n}} go 8',
     activity: 'Go itshidila',
     minutes: 'Metsotso e le {{n}}',
+    minutes_one: 'Motsotso o le {{n}}',
     moodCard: 'Maikutlo',
     cravingsCard: 'Keletso',
     heart: 'Go betsa ga pelo o ikhuditse',
@@ -579,7 +583,9 @@ const tn: Strings = {
     patternCravingDay: 'Keletso e maatla thata ka {{day}}.',
     patternSleepCraving: 'Keletso e nna maatla go feta morago ga bosigo jo o robetseng go le gonnye.',
     patternLonely: 'Bodutu bo tlhagetse ga {{n}} kgwedi e. Go ikgolaganya le ba bangwe go ka thusa.',
+    patternLonely_one: 'Bodutu bo tlhagetse gangwe kgwedi e. Go ikgolaganya le ba bangwe go ka thusa.',
     patternTired: 'Letsapa le tlhagetse ga {{n}} kgwedi e. Boikhutso bo ka thusa.',
+    patternTired_one: 'Letsapa le tlhagetse gangwe kgwedi e. Boikhutso bo ka thusa.',
     patternStreak: 'O itlhotse mo malatsing a le {{n}} go a le 7 a bofelo. Go tswelela ka tsela e go botlhokwa.',
     sum: {
       title: 'Kakaretso ya Project Serenity ya ga {{name}}',

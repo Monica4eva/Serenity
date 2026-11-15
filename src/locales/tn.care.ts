@@ -131,6 +131,7 @@ const care: typeof enCare = {
     showSample: 'Bontsha badirisi ba sekai',
     hideSample: 'Fitlha badirisi ba sekai',
     days: 'Malatsi a le {{n}}',
+    days_one: 'Letsatsi le le {{n}}',
     waiting: 'Re emetse tlhaloso ya bone ya ntlha',
     updated: 'E ntšhafaditswe {{when}}',
     unread: 'E mešwa e le {{n}}',
@@ -203,6 +204,7 @@ const care: typeof enCare = {
     emergency: 'Leletsa ambulense 997',
     days: 'malatsi mo loetong lwa gagwe',
     next: 'Kgato e e latelang: malatsi a le {{n}}',
+    next_one: 'Kgato e e latelang: letsatsi le le {{n}}',
     reached: 'Dikgato tse di fitlheletsweng',
     encourage: 'Romela kgothatso',
     templates: [

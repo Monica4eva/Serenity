@@ -1,6 +1,7 @@
 // Today (designer's layout): greeting + bell, day card, journal card, Today's Focus (8 items),
 // Need Support banner, My Progress.
 import React from 'react';
+import { displayName } from '../../lib/names';
 import { Pressable, Share, View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -30,7 +31,7 @@ const FOCUS_LABEL: Record<string, string> = {
 export default function Today() {
   const { t, state, update } = useApp();
   const c = useDS();
-  const name = state.profile.preferredName || state.account?.fullName?.split(' ')[0] || '';
+  const name = displayName(state);
   const days = daysBetween(state.recoveryStart) + 1; // the first day counts as Day 1
   const today = dayKey();
   const tod = timeOfDay();
@@ -40,6 +41,7 @@ export default function Today() {
   const wk = startOfWeek(new Date());
   const weekDays = new Set(state.journal.filter((j) => new Date(j.at) >= wk).map((j) => dayKey(new Date(j.at))));
   const words = state.journal.reduce((a, j) => a + (j.text.trim() ? j.text.trim().split(/\s+/).length : 0), 0);
+  const journalLine = `${t('ui.entriesN', { n: state.journal.length })} - ${t('ui.wordsN', { n: words })}`;
   const focus = focusForDay(state, today);
   const isMilestone = MILESTONES.includes(days);
   const content = useContent();
@@ -141,12 +143,12 @@ export default function Today() {
         <Pressable
           onPress={() => router.push('/journal')}
           accessibilityRole="button"
-          accessibilityLabel={`${t('ui.journalCard', { entries: state.journal.length, words })}. ${t('today.journalWeek', { n: weekDays.size })}`}
+          accessibilityLabel={`${journalLine}. ${t('today.journalWeek', { n: weekDays.size })}`}
           style={{ backgroundColor: c.d ? '#2B3F73' : c.navy, borderRadius: 14, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}
         >
           <View style={{ flex: 1, gap: 8 }}>
             <Txt bold color="#FFFFFF" style={{ fontSize: 19 }}>
-              {t('ui.journalCard', { entries: state.journal.length, words: words.toLocaleString('en') })}
+              {journalLine}
             </Txt>
             <View style={{ height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.35)', width: '88%' }}>
               <View style={{ height: 6, borderRadius: 3, backgroundColor: '#FFFFFF', width: `${(weekDays.size / 7) * 100}%` }} />

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { freshForNewPerson } from '../../lib/store';
+import { forgetSyncState } from '../../lib/sync';
 import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useApp } from '../../lib/useApp';
@@ -21,7 +23,7 @@ function strength(p: string) {
 }
 
 export default function Account() {
-  const { t, update, theme } = useApp();
+  const { t, update, theme, state } = useApp();
   const c = useDS();
   const [f, setF] = useState({ name: '', email: '', phone: '', pw: '', pw2: '' });
   const [touched, setTouched] = useState(false);
@@ -56,12 +58,17 @@ export default function Account() {
     } else {
       passwordHash = await hashSecretStrong(f.pw);
     }
-    update((s) => ({
+    update((prev) => {
+      // Someone else's data is on this phone (they logged out): start clean for the new person.
+      const s = prev.account ? freshForNewPerson(prev) : prev;
+      return {
       ...s,
       loggedIn: true,
       account: { fullName: f.name.trim(), email: f.email.trim().toLowerCase(), phone: f.phone.trim() || undefined, passwordHash, userId, provider: 'email', createdAt: new Date().toISOString() },
       profile: { ...s.profile, preferredName: s.profile.preferredName || f.name.trim().split(' ')[0] },
-    }));
+      };
+    });
+    if (state.account) forgetSyncState().catch(() => {});
     router.push('/onboarding/consent');
   };
   const st = f.pw ? strength(f.pw) : null;
