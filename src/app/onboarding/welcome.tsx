@@ -8,7 +8,7 @@ import Logo, { Wordmark } from '../../components/Logo';
 import { Page, Pill, useDS } from '../../components/ds';
 
 export default function Welcome() {
-  const { t, theme } = useApp();
+  const { t, theme, state } = useApp();
   const c = useDS();
   const { width } = useWindowDimensions();
   const [page, setPage] = useState(0);
@@ -28,6 +28,15 @@ export default function Welcome() {
               </Txt>
             </Txt>
           </Pressable>
+          {/* Judges and visitors can explore every view with sample data (only when no real account is on this device). */}
+          {!state.account || state.demo ? (
+            <Pressable onPress={() => router.push('/demo')} accessibilityRole="button" accessibilityHint={t('ui.demo.tryHint')} style={{ minHeight: 44, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8, borderWidth: 1.5, borderColor: c.navy, borderRadius: 24, marginHorizontal: 24 }}>
+              <Ionicons name="play-circle-outline" size={20} color={c.navy} />
+              <Txt bold color={c.navy}>
+                {t('ui.demo.try')}
+              </Txt>
+            </Pressable>
+          ) : null}
           <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10 }} accessibilityLabel={`${page + 1} / 3`}>
             {slides.map((_, i) => (
               <View key={i} style={{ width: 14, height: 14, borderRadius: 7, backgroundColor: i === page ? c.navy : '#B4DDEF' }} />

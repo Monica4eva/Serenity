@@ -153,6 +153,8 @@ export type State = {
   pendingSync: number;
   /** Journal entries downloaded from the server that this phone cannot unlock (needs the recovery key). */
   journalLocked: number;
+  /** "Try the demo": sample data on this device only; never synced. */
+  demo?: boolean;
 };
 
 export const TERMS_VERSION = '0.1';

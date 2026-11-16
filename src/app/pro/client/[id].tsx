@@ -11,8 +11,9 @@ import { formatDateTime, dayKey } from '../../../lib/dates';
 import { Txt, announce } from '../../../components/ui';
 import { Card, DS, FieldBox, Page, Pill, SectionLabel, TopBar, useDS } from '../../../components/ds';
 import { ColourDot, LOGO_COLOURS, MessageThread, MiniBars, SampleTag, Tabs } from '../../../components/care';
+import { SessionAssistant } from '../../../components/SessionAssistant';
 
-type Tab = 'overview' | 'journal' | 'plan' | 'notes' | 'messages';
+type Tab = 'overview' | 'assistant' | 'journal' | 'plan' | 'notes' | 'messages';
 
 export default function Client() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -87,6 +88,7 @@ export default function Client() {
         onChange={setTab}
         tabs={[
           { key: 'overview', label: t('care.pro.tabs.overview') },
+          { key: 'assistant', label: t('care.ai.tab') },
           { key: 'journal', label: t('care.pro.tabs.journal'), badge: person.journal.length || undefined },
           { key: 'plan', label: t('care.pro.tabs.plan') },
           { key: 'notes', label: t('care.pro.tabs.notes') },
@@ -162,6 +164,18 @@ export default function Client() {
           <View style={{ height: 6 }} />
           <Pill title={t('care.pro.leave')} variant="outline" onPress={leave} />
         </>
+      ) : null}
+
+      {tab === 'assistant' ? (
+        <SessionAssistant
+          person={person}
+          onUseInPlan={(goals, homework) => {
+            // Copies the draft into the plan editor only. The counsellor edits it and decides whether to save.
+            setPlan((p) => ({ ...p, goals: [...p.goals, ...goals.filter((g) => !p.goals.includes(g))], homework: homework || p.homework }));
+            setTab('plan');
+            announce(t('care.ai.copied'));
+          }}
+        />
       ) : null}
 
       {tab === 'journal' ? (

@@ -426,6 +426,23 @@ const ui = {
   notifReconfirm: 'Please re-confirm emergency permission for {{name}}.',
   notifMilestone: 'You reached Day {{n}}. Celebrate this step forward.',
   notifAgreement: 'Your Recovery Support Agreement is due for review.',
+  demo: {
+    try: 'Try the demo (no sign-up)',
+    tryHint: 'Explore with sample data, no sign-up',
+    title: 'Try Serenity',
+    sub: 'Explore the app with sample data. Nothing is saved online, and you can switch views at any time.',
+    member: 'Person in recovery',
+    memberDesc: 'Thabo, 23 days in recovery, after a hard day yesterday',
+    pro: 'Counsellor or therapist',
+    proDesc: 'See sample clients, alerts, trends and shared journal entries',
+    sup: 'Family or friend',
+    supDesc: 'See a simple status, milestones and encouragement',
+    banner: 'Demo mode: sample data',
+    switchView: 'Switch view',
+    exit: 'Exit demo',
+    hasAccount: 'The demo is only available when nobody has an account on this device, so real data is never replaced. Open the app in a private or incognito browser window to try it.',
+    exitConfirm: 'Leave the demo? The sample data will be cleared from this device.',
+  },
 };
 
 export default ui;

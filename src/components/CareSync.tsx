@@ -24,7 +24,7 @@ export function CareSync() {
   latest.current = state;
 
   const refresh = async () => {
-    if (!careOnline) return;
+    if (!careOnline || latest.current.demo) return;
     try {
       if (role === 'member') {
         const d = await fetchMemberData();
@@ -78,7 +78,7 @@ export function CareSync() {
 
   // Alert the care team when the colour gets worse.
   useEffect(() => {
-    if (!ready || role !== 'member' || !state.onboarded) return;
+    if (!ready || role !== 'member' || !state.onboarded || state.demo) return;
     const next = logo.state as LogoColour;
     const prev = prevLogo.current;
     prevLogo.current = next;

@@ -7,16 +7,18 @@ import Overview from './pages/Overview';
 import Counsellors from './pages/Counsellors';
 import Content from './pages/Content';
 import Helplines from './pages/Helplines';
+import AiOversight from './pages/AI';
 import { ActivityLog, Admins } from './pages/Team';
 
 type Stage = 'loading' | 'signin' | 'mfa' | 'notadmin' | 'in' | 'reset';
-type Page = 'overview' | 'content' | 'counsellors' | 'helplines' | 'admins' | 'log';
+type Page = 'overview' | 'content' | 'counsellors' | 'helplines' | 'ai' | 'admins' | 'log';
 
 const PAGES: { key: Page; label: string; roles: AdminRole[] }[] = [
   { key: 'overview', label: 'Impact overview', roles: ['admin', 'clinician', 'editor'] },
   { key: 'content', label: 'App content', roles: ['admin', 'clinician', 'editor'] },
   { key: 'counsellors', label: 'Counsellors', roles: ['admin', 'clinician'] },
   { key: 'helplines', label: 'Emergency numbers', roles: ['admin', 'clinician', 'editor'] },
+  { key: 'ai', label: 'AI oversight', roles: ['admin', 'clinician', 'editor'] },
   { key: 'admins', label: 'Admin team', roles: ['admin'] },
   { key: 'log', label: 'Activity log', roles: ['admin'] },
 ];
@@ -101,6 +103,7 @@ export default function App() {
         {current === 'content' && role ? <Content role={role} /> : null}
         {current === 'counsellors' && role ? <Counsellors role={role} /> : null}
         {current === 'helplines' && role ? <Helplines role={role} /> : null}
+        {current === 'ai' && role ? <AiOversight role={role} /> : null}
         {current === 'admins' && role ? <Admins role={role} /> : null}
         {current === 'log' && role ? <ActivityLog role={role} /> : null}
         </ErrorBoundary>

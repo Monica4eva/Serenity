@@ -31,7 +31,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
   };
 
   const syncNow = useCallback(async () => {
-    if (!backendEnabled || busy.current || resettingPassword) return;
+    if (!backendEnabled || busy.current || resettingPassword || latest.current.demo) return;
     busy.current = true;
     setStatus('syncing');
     try {
@@ -48,7 +48,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const pullNow = useCallback(async () => {
-    if (!backendEnabled) return;
+    if (!backendEnabled || latest.current.demo) return;
     try {
       setStatus('syncing');
       const res = await pullAll();

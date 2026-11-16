@@ -89,6 +89,8 @@ const ACTION_TEXT: Record<string, string> = {
   professional_rejected: 'Rejected a counsellor',
   professional_suspended: 'Suspended a counsellor',
   professional_pending: 'Moved a counsellor back to waiting',
+  ai_assistant_on: 'Switched the AI Session Assistant on',
+  ai_assistant_off: 'Switched the AI Session Assistant off',
   content_published: 'Published app content',
   content_draft: 'Saved a content draft',
   content_hidden: 'Hid app content',

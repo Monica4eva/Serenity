@@ -333,5 +333,27 @@ r = await as(AD, `select action, target from public.admin_actions where action l
 ok(r.rows?.some((x) => x.action === 'content_published' && x.target === 'recipe:seswaa'), 'content changes are logged');
 r = await as(ED, `delete from public.content_items where item_key='seswaa' returning item_key`, 'aal2');
 ok(!r.error && r.rows?.length === 1, 'editor restores the original by removing the edit ' + r.error);
+
+// ---------- AI oversight ----------
+await db.exec(`insert into public.ai_usage (demo, outcome, model, lang, ms) values (false,'ok','gemini-x','en',1200),(true,'ok','gemini-x','en',900),(false,'model_unavailable',null,'tn',null)`);
+r = await as(A, `select * from public.ai_usage`, 'aal2');
+ok(!!r.error || r.rows?.length === 0, 'ordinary users cannot read AI usage');
+r = await as(null, `select * from public.app_settings`);
+ok(!!r.error || r.rows?.length === 0, 'the AI switch is not public');
+r = await as(A, `select public.admin_set_ai(false)`, 'aal2');
+ok(!!r.error, 'ordinary users cannot switch the AI off');
+r = await as(ED, `select public.admin_set_ai(false)`, 'aal2');
+ok(!!r.error, 'editors cannot switch the AI off');
+r = await as(AD, `select public.admin_set_ai(false)`, 'aal1');
+ok(!!r.error, 'switching the AI needs MFA');
+r = await as(AD, `select public.admin_set_ai(false)`, 'aal2');
+ok(!r.error, 'admin switches the AI off ' + r.error);
+r = await as(ED, `select public.admin_ai_overview() j`, 'aal2');
+ok(!r.error && r.rows?.[0]?.j?.enabled === false && r.rows[0].j.ok_30d === 2 && r.rows[0].j.real_30d === 1 && r.rows[0].j.outcomes_30d?.model_unavailable === 1 && r.rows[0].j.daily_14d?.length === 14, 'AI overview shows the switch and counts ' + r.error);
+r = await as(AD, `select action from public.admin_actions where action like 'ai_assistant_%'`, 'aal2');
+ok(r.rows?.some((x) => x.action === 'ai_assistant_off'), 'AI switch changes are logged');
+await as(AD, `select public.admin_set_ai(true)`, 'aal2');
+r = await as(AD, `select value from public.app_settings where key='ai_assistant'`, 'aal2');
+ok(!!r.error || r.rows?.length === 0, 'even admins read the switch only through the overview function');
 console.log(`schema tests: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

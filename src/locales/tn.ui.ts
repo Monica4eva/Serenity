@@ -429,6 +429,23 @@ const ui: typeof enUi = {
   notifReconfirm: 'Tsweetswee netefatsa gape tetla ya tshoganyetso ya ga {{name}}.',
   notifMilestone: 'O fitlhile Letsatsi {{n}}. Keteka kgato e ya kgatelopele.',
   notifAgreement: 'Tumalano ya gago ya Tshegetso ya go Fola e tshwanetse go sekasekwa.',
+  demo: {
+    try: 'Leka sekao (o sa ikwadise)',
+    tryHint: 'Tlhotlhomisa ka tshedimosetso ya sekao, o sa ikwadise',
+    title: 'Leka Serenity',
+    sub: 'Tlhotlhomisa app ka tshedimosetso ya sekao. Ga go sepe se se bolokwang mo inthaneteng, mme o ka fetola ponalo nako nngwe le nngwe.',
+    member: 'Motho yo o folang',
+    memberDesc: 'Thabo, malatsi a le 23 a go fola, morago ga letsatsi le le thata maabane',
+    pro: 'Mogakolodi kgotsa moalafi',
+    proDesc: 'Bona badirisi ba sekao, ditemoso, ditlhagiso le dikwalo tse di abilweng',
+    sup: 'Ba lelapa kgotsa tsala',
+    supDesc: 'Bona maemo a a motlhofo, dintlha tsa katlego le dikgothatso',
+    banner: 'Sekao: tshedimosetso ya sekao',
+    switchView: 'Fetola ponalo',
+    exit: 'Tswa mo sekaong',
+    hasAccount: 'Sekao se bonala fela fa go se na ope yo o nang le akhaonto mo sedirisweng se, gore tshedimosetso ya nnete e se ka ya phimolwa. Bula app mo fensetereng ya sephiri ya sebatli go e leka.',
+    exitConfirm: 'O batla go tswa mo sekaong? Tshedimosetso ya sekao e tla phimolwa mo sedirisweng se.',
+  },
 };
 
 export default ui;

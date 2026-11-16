@@ -33,6 +33,11 @@ export type Impact = {
   safety_30d: Record<string, number>;
   care: { professional_links: number; supporter_links: number; pending_professionals: number; verified_professionals: number };
 };
+export type AiOverview = {
+  enabled: boolean; changed_at: string | null; ok_7d: number; ok_30d: number; real_30d: number; demo_30d: number;
+  avg_ms_30d: number | null; outcomes_30d: Record<string, number>; models_30d: string[];
+  daily_14d: { day: string; ok: number; failed: number }[];
+};
 
 const fail = (e: { message: string } | null) => {
   if (e) throw new Error(e.message);
@@ -232,6 +237,36 @@ export async function restoreContent(type: string, key: string) {
 
 const daysAgo = (n: number) => new Date(Date.now() - n * 86400000).toISOString();
 const DEMO_ME = '00000000-0000-0000-0000-00000000demo';
+// ---------- AI oversight (Session Assistant): counts only, plus the on/off switch ----------
+let demoAiOn = true;
+export async function getAiOverview(): Promise<AiOverview> {
+  if (DEMO) {
+    const days = Array.from({ length: 14 }, (_, i) => {
+      const d = new Date(Date.now() - (13 - i) * 864e5).toISOString().slice(0, 10);
+      return { day: d, ok: [0, 1, 0, 2, 3, 1, 0, 4, 2, 5, 3, 6, 4, 7][i], failed: i === 9 ? 1 : 0 };
+    });
+    return { enabled: demoAiOn, changed_at: null, ok_7d: 28, ok_30d: 41, real_30d: 12, demo_30d: 29, avg_ms_30d: 2300, outcomes_30d: { ok: 41, rate: 2, model_unavailable: 1 }, models_30d: ['gemini-3.8-flash'], daily_14d: days };
+  }
+  const { data, error } = await sb!.rpc('admin_ai_overview');
+  fail(error);
+  return {
+    ...data,
+    outcomes_30d: data?.outcomes_30d ?? {},
+    models_30d: data?.models_30d ?? [],
+    daily_14d: data?.daily_14d ?? [],
+  } as AiOverview;
+}
+
+export async function setAiEnabled(enabled: boolean): Promise<void> {
+  if (DEMO) {
+    demoAiOn = enabled;
+    demoLog(enabled ? 'ai_assistant_on' : 'ai_assistant_off', 'ai_assistant', { enabled });
+    return;
+  }
+  const { error } = await sb!.rpc('admin_set_ai', { p_enabled: enabled });
+  fail(error);
+}
+
 const demo = {
   pros: [
     { user_id: 'p1', display_name: 'Dr Kgosi Molefe', email: 'kgosi@clinic.bw', profession: 'Clinical psychologist', registration: 'BHPC 0412', organisation: 'Princess Marina Hospital', review_status: 'pending', review_note: null, reviewed_at: null, created_at: daysAgo(1), active_clients: 2 },
