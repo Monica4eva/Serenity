@@ -2,7 +2,8 @@
 // answer is validated before a counsellor sees it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildPrompt, hasEnoughData, parseDraft, safetyNote, sanitize } from '../supabase/functions/session-assistant/core.ts';
+import fs from 'node:fs';
+import { buildPrompt, fallbackDraft, hasEnoughData, parseDraft, safetyNote, sanitize } from '../supabase/functions/session-assistant/core.ts';
 
 const summary = {
   v: 1,
@@ -73,4 +74,28 @@ test('red or crisis signs always get the fixed safety line', () => {
   assert.ok(safetyNote(sanitize({ logo: 'orange', reasons: ['worryingWords'] }, 'en')));
   assert.equal(safetyNote(sanitize({ logo: 'orange', reasons: ['shortSleep'] }, 'en')), undefined);
   assert.ok(safetyNote(sanitize({ logo: 'red' }, 'tn'))?.includes('Tlhokomelo'));
+});
+
+test('built-in draft works with no data, in both languages', () => {
+  const en = fallbackDraft(sanitize({}, 'en'));
+  assert.ok(en.changes[0].includes('No check-ins'));
+  assert.equal(en.talkingPoints.length, 3);
+  const tn = fallbackDraft(sanitize(null, 'tn'));
+  assert.ok(!/[A-Z][a-z]+ check-ins/.test(JSON.stringify(tn)), 'no English in the Setswana draft');
+});
+
+test('built-in draft reads the trends', () => {
+  const d = fallbackDraft(sanitize(summary, 'en'));
+  assert.ok(d.changes.some((x) => x.includes('Cravings')));
+  assert.ok(d.watch.some((x) => x.includes('strong cravings')));
+  assert.ok(d.planGoals.length >= 1 && d.planGoals.length <= 3);
+  const tn = fallbackDraft(sanitize(summary, 'tn'));
+  assert.ok(tn.watch.some((x) => x.includes('dikeletso tse di maatla')), 'warning signs in Setswana');
+});
+
+test('the Edge Function carries the same core code (one-file deploy)', () => {
+  const core = fs.readFileSync(new URL('../supabase/functions/session-assistant/core.ts', import.meta.url), 'utf8');
+  const index = fs.readFileSync(new URL('../supabase/functions/session-assistant/index.ts', import.meta.url), 'utf8');
+  assert.ok(index.includes(core), 'run npm run build:ai after editing core.ts');
+  assert.ok(!index.includes("from './core.ts'"), 'index.ts must not import other files');
 });

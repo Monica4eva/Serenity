@@ -60,7 +60,8 @@
     "typecheck": "tsc --noEmit",
     "test:db": "node supabase/tests/schema.test.mjs",
     "web:build": "expo export -p web",
-    "web:deploy": "expo export -p web && eas deploy --prod"
+    "web:deploy": "expo export -p web && eas deploy --prod",
+    "build:ai": "node scripts/build-ai.mjs"
   },
   "private": true
 }

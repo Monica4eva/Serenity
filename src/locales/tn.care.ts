@@ -132,6 +132,8 @@ const care: typeof enCare = {
     working: 'Go baakanya tlhamo ya kopano...',
     ready: 'Tlhamo ya kopano e siametse.',
     draftBadge: 'Tlhamo ya AI: e tlhatlhobe pele o e dirisa. E ka nna ya fosa mme ga e emele katlholo ya gago ya bongaka.',
+    builtinBadge: 'Tlhamo ya Serenity: AI ga e a kgona go fitlhelelwa jaanong, ka jalo Serenity e dirile se ka tshedimosetso e e tshwanang le melao e e tlhomamisitsweng. E tlhatlhobe pele o e dirisa.',
+    metaBuiltin: 'E dirilwe ke melao ya Serenity ka {{when}} (lebaka: {{code}}). Tobetsa Baakanya tlhamo e ntšhwa go leka AI gape.',
     changes: 'Se se fetogileng',
     watch: 'Dipontsho tse o ka di sekasekang',
     talk: 'Dintlha tsa puisano',

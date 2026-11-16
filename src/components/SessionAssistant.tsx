@@ -28,8 +28,7 @@ export function SessionAssistant({ person, onUseInPlan }: { person: LinkedPerson
       setRes(r);
       announce(t('care.ai.ready'));
     } catch (e) {
-      const code = e instanceof AssistantFailure ? e.code : 'unknown';
-      setErr(t(`care.ai.err.${code}`));
+      setErr(t(`care.ai.err.${e instanceof AssistantFailure ? e.code : 'unknown'}`));
     } finally {
       setBusy(false);
     }
@@ -92,7 +91,7 @@ export function SessionAssistant({ person, onUseInPlan }: { person: LinkedPerson
           ) : null}
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: c.tint('lavender'), borderRadius: 12, padding: 10 }}>
             <Ionicons name="alert-circle-outline" size={18} color={c.navy} />
-            <Txt variant="small" color={c.title} style={{ flex: 1 }}>{t('care.ai.draftBadge')}</Txt>
+            <Txt variant="small" color={c.title} style={{ flex: 1 }}>{res.source === 'ai' ? t('care.ai.draftBadge') : t('care.ai.builtinBadge')}</Txt>
           </View>
           <Card style={{ gap: 14 }}>
             {section(t('care.ai.changes'), res.draft.changes, 'trending-up-outline')}
@@ -104,7 +103,9 @@ export function SessionAssistant({ person, onUseInPlan }: { person: LinkedPerson
           <Pill title={t('care.ai.usePlan')} variant="outline" icon={{ name: 'create-outline' }} onPress={() => onUseInPlan(res.draft.planGoals, res.draft.homework)} />
           <SectionLabel>{t('care.ai.about')}</SectionLabel>
           <Txt variant="small" color={c.body}>
-            {t('care.ai.meta', { model: res.model, when: formatDateTime(new Date(res.at), state.language) })}
+            {res.source === 'ai'
+              ? t('care.ai.meta', { model: res.model ?? 'AI', when: formatDateTime(new Date(res.at), state.language) })
+              : t('care.ai.metaBuiltin', { when: formatDateTime(new Date(res.at), state.language), code: res.note ?? 'unknown' })}
           </Txt>
           {state.language === 'tn' ? <Txt variant="small" color={c.body}>{t('care.ai.tnNote')}</Txt> : null}
         </>

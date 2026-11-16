@@ -438,6 +438,7 @@ const ui = {
     sup: 'Family or friend',
     supDesc: 'See a simple status, milestones and encouragement',
     banner: 'Demo mode: sample data',
+    home: 'Home',
     switchView: 'Switch view',
     exit: 'Exit demo',
     hasAccount: 'The demo is only available when nobody has an account on this device, so real data is never replaced. Open the app in a private or incognito browser window to try it.',

@@ -31,6 +31,23 @@ export const REASONS: Record<string, string> = {
   relapse: 'reported a relapse',
 };
 
+export const REASONS_TN: Record<string, string> = {
+  amberCheckin: 'tlhatlhobo ya tekatekano ya bosheng e bontshitse fa a sa tekatekana',
+  missed2Days: 'ditiro tsa letsatsi le letsatsi ga di a dirwa ka malatsi a le 2',
+  missed3Days: 'ditiro tsa letsatsi le letsatsi ga di a dirwa ka malatsi a le 3 kgotsa go feta',
+  strongCraving: 'dikeletso tse di maatla',
+  worryingWords: 'mafoko a a bontshang gore a ka tswa a le mo botlhokong (puo ya tshoganyetso)',
+  emergencyOpened: 'o butse thuso ya tshoganyetso bosheng',
+  missedAppointment: 'kopano e e tlodilweng',
+  heavyHalt: 'gantsi o na le tlala, bogale, bodutu kgotsa letsapa',
+  lowMoodWords: 'mafoko a maikutlo a a kwa tlase mo dikwalong',
+  lowMoodRepeated: 'kgatelelo kgotsa letshogo di kwadilwe go feta gangwe',
+  shortSleep: 'boroko jo bo kwa tlase ga jo bo tlwaelegileng',
+  lowWellbeing: 'maduo a boitekanelo a a kwa tlase',
+  disclosure: 'o boleletse app gore a ka nna mo kotsing',
+  relapse: 'o begile go wela gape',
+};
+
 export const GOALS: Record<string, string> = {
   substanceFree: 'staying substance-free',
   relationships: 'rebuilding relationships',
@@ -99,8 +116,12 @@ export function buildPrompt(i: SafeInput): string {
     goals: i.goals,
     relapsesLast30Days: i.relapses30,
   };
+  const noData = !hasEnoughData(i);
   return [
     'You help an addiction-recovery counsellor prepare for a session with their client.',
+    noData
+      ? 'There is little or no shared data yet (a new client, or they have not checked in). Prepare a warm first or early session instead: what to learn about the client, gentle questions, and simple first goals. Say clearly that there is not enough data to see trends.'
+      : 'Use the shared data below.',
     'You only see anonymous numbers and warning-sign labels. You do not know the client and must not invent facts, events, causes or diagnoses.',
     'Rules: no diagnosis, no medication or dosage advice, no judgement or blame, recovery-positive language, treat a slip as experience to learn from.',
     'Point to patterns in the numbers (for example sleep falling while cravings rise) and say they are possibilities to explore with the client, not conclusions.',
@@ -153,4 +174,101 @@ export function safetyNote(i: SafeInput): string | undefined {
       ? 'Tlhokomelo: konopo e khibidu kgotsa go na le dipontsho tsa kotsi. Ikgolaganye le motho yo o mo thusang gompieno mme o latele tsamaiso ya tshoganyetso ya tirelo ya gago. Sena ga se emele maemo a tshoganyetso.'
       : 'Safety first: the button is red or there are risk signs. Contact your client today and follow your service\'s crisis protocol. This draft does not replace an urgent response.';
   return undefined;
+}
+
+
+const avg = (xs: (number | undefined)[]) => {
+  const v = xs.filter((x): x is number => typeof x === 'number');
+  return v.length ? v.reduce((a, b) => a + b, 0) / v.length : undefined;
+};
+const r1 = (n: number) => Math.round(n * 10) / 10;
+
+/**
+ * Built-in draft made by fixed rules, used when the AI cannot be reached (no key, network or model
+ * error). It is always labelled as built-in, never as AI. Works with no data at all.
+ */
+export function fallbackDraft(i: SafeInput): Draft {
+  const tn = i.lang === 'tn';
+  const L = (en: string, tsw: string) => (tn ? tsw : en);
+  if (!hasEnoughData(i)) {
+    return {
+      changes: [L('No check-ins have been shared yet, so there are no trends to compare.', 'Ga go ise go abelanwe ditlhatlhobo, ka jalo ga go na ditlhagiso tse di ka bapisiwang.')],
+      watch: [L('How they are settling into recovery and into using Serenity.', 'Ka moo ba tlwaelang go fola le go dirisa Serenity ka teng.')],
+      talkingPoints: [
+        L('What would make the next two weeks feel like a good start?', 'Ke eng se se ka dirang gore dibeke tse pedi tse di tlang e nne tshimologo e e siameng?'),
+        L('What usually helps you on a hard day?', 'Ke eng se gantsi se go thusang mo letsatsing le le thata?'),
+        L('Who supports you right now, and who could you call?', 'Ke mang yo o go tshegetsang jaanong, mme o ka leletsa mang?'),
+      ],
+      planGoals: [
+        L('Do a short check-in on Serenity once a day.', 'Dira tlhatlhobo e khutshwane mo Serenity gangwe ka letsatsi.'),
+        L('Choose one support person to contact on hard days.', 'Tlhopha motho a le mongwe wa tshegetso yo o tla mo ikgolaganyang le ene mo malatsing a a thata.'),
+      ],
+      homework: L('Try the HALT check-in each day until the next session.', 'Leka tlhatlhobo ya HALT letsatsi le letsatsi go fitlha kopanong e e latelang.'),
+    };
+  }
+  const t = i.trends;
+  const half = Math.max(1, Math.floor(t.length / 2));
+  const a = t.slice(0, half);
+  const b = t.slice(half);
+  const m1 = avg(a.map((d) => d.mood)), m2 = avg(b.map((d) => d.mood));
+  const c1 = avg(a.map((d) => d.craving)), c2 = avg(b.map((d) => d.craving));
+  const s1 = avg(a.map((d) => d.sleep)), s2 = avg(b.map((d) => d.sleep));
+  const checked = t.filter((d) => d.checkedIn).length;
+  const changes: string[] = [];
+  let moodDown = false, cravUp = false, sleepDown = false;
+  if (m1 !== undefined && m2 !== undefined) {
+    const d = m2 - m1;
+    moodDown = d <= -0.5;
+    changes.push(
+      d >= 0.5
+        ? L(`Mood has improved, from about ${r1(m1 + 1)} to ${r1(m2 + 1)} out of 5.`, `Maikutlo a tokafetse, go tswa go ${r1(m1 + 1)} go ya go ${r1(m2 + 1)} mo go 5.`)
+        : moodDown
+          ? L(`Mood has dropped, from about ${r1(m1 + 1)} to ${r1(m2 + 1)} out of 5.`, `Maikutlo a wetse, go tswa go ${r1(m1 + 1)} go ya go ${r1(m2 + 1)} mo go 5.`)
+          : L(`Mood has been steady at about ${r1(m2 + 1)} out of 5.`, `Maikutlo a ntse a tsepame mo go ${r1(m2 + 1)} mo go 5.`),
+    );
+  }
+  if (c1 !== undefined && c2 !== undefined) {
+    cravUp = c2 - c1 >= 0.4 || c2 >= 1.5;
+    changes.push(
+      cravUp
+        ? L('Cravings have been stronger in the most recent days.', 'Dikeletso di nnile di le maatla mo malatsing a bosheng.')
+        : c2 < c1 - 0.3
+          ? L('Cravings have eased compared with earlier.', 'Dikeletso di fokotsegile fa di bapisiwa le pele.')
+          : L('Cravings have stayed at a similar level.', 'Dikeletso di nnile mo selekanyong se se tshwanang.'),
+    );
+  }
+  if (s1 !== undefined && s2 !== undefined) {
+    sleepDown = s2 < s1 - 0.7 || s2 < 5.5;
+    changes.push(
+      sleepDown
+        ? L(`Sleep has fallen to about ${r1(s2)} hours a night.`, `Boroko bo fokotsegile go ka nna diura di le ${r1(s2)} ka bosigo.`)
+        : L(`Sleep has been about ${r1(s2)} hours a night.`, `Boroko bo nnile go ka nna diura di le ${r1(s2)} ka bosigo.`),
+    );
+  }
+  changes.push(L(`Checked in on ${checked} of the last ${t.length} days.`, `O tlhotse mo malatsing a le ${checked} mo go a le ${t.length} a a fetileng.`));
+
+  const watch = i.reasons.slice(0, 3).map((r) => L(`Warning sign: ${REASONS[r]}.`, `Pontsho ya temoso: ${REASONS_TN[r] ?? REASONS[r]}.`));
+  if (cravUp && sleepDown) watch.push(L('Whether shorter sleep and stronger cravings are linked.', 'Fa e le gore boroko jo bo khutshwane le dikeletso tse di maatla di a amana.'));
+  if (!watch.length) watch.push(L('No warning signs in the shared data: explore what is helping.', 'Ga go na dipontsho tsa temoso: sekaseka se se thusang.'));
+
+  const talk: string[] = [];
+  if (moodDown) talk.push(L('What has felt hardest recently?', 'Ke eng se se nnileng thata thata bosheng?'));
+  if (cravUp) talk.push(L('When cravings came, what was happening just before?', 'Fa dikeletso di tla, go ne go diragala eng pele ga moo?'));
+  if (sleepDown) talk.push(L('How have the nights been lately?', 'Masigo a ntse jang bosheng?'));
+  talk.push(L('What has gone well that you want to keep doing?', 'Ke eng se se tsamaileng sentle se o batlang go tswelela ka sone?'));
+  talk.push(L('Who could you lean on this week?', 'O ka ikaega ka mang beke eno?'));
+
+  const goals: string[] = [];
+  if (cravUp) goals.push(L('Use urge surfing or a breathing exercise when a craving starts.', 'Dirisa go palama kgatelelo kgotsa thapelo ya go hema fa keletso e simolola.'));
+  if (sleepDown) goals.push(L('Keep a regular bedtime on most nights.', 'Nna le nako e e tlwaelegileng ya go robala mo masigong a mantsi.'));
+  if (checked < Math.ceil(t.length / 2)) goals.push(L('Check in on Serenity once a day.', 'Dira tlhatlhobo mo Serenity gangwe ka letsatsi.'));
+  goals.push(L('Plan one healthy activity each day.', 'Rulaganya tiro e le nngwe e e itekanetseng letsatsi le letsatsi.'));
+
+  return {
+    changes: changes.slice(0, 4),
+    watch: watch.slice(0, 3),
+    talkingPoints: talk.slice(0, 3),
+    planGoals: goals.slice(0, 3),
+    homework: L('Each day, write down one moment when a craving or hard feeling passed.', 'Letsatsi le letsatsi, kwala nako e le nngwe fa keletso kgotsa maikutlo a a thata a fetile.'),
+  };
 }

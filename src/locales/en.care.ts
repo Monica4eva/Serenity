@@ -130,6 +130,8 @@ const care = {
     working: 'Preparing your session draft...',
     ready: 'Your session draft is ready.',
     draftBadge: 'AI draft: check before use. It can be wrong and does not replace your clinical judgement.',
+    builtinBadge: 'Built-in draft: the AI could not be reached right now, so Serenity made this from the same data using fixed rules. Check it before use.',
+    metaBuiltin: 'Made by Serenity\'s built-in rules on {{when}} (reason: {{code}}). Tap Prepare a new draft to try the AI again.',
     changes: 'What changed',
     watch: 'Signs to explore',
     talk: 'Talking points',

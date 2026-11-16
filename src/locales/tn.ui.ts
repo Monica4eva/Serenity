@@ -441,6 +441,7 @@ const ui: typeof enUi = {
     sup: 'Ba lelapa kgotsa tsala',
     supDesc: 'Bona maemo a a motlhofo, dintlha tsa katlego le dikgothatso',
     banner: 'Sekao: tshedimosetso ya sekao',
+    home: 'Gae',
     switchView: 'Fetola ponalo',
     exit: 'Tswa mo sekaong',
     hasAccount: 'Sekao se bonala fela fa go se na ope yo o nang le akhaonto mo sedirisweng se, gore tshedimosetso ya nnete e se ka ya phimolwa. Bula app mo fensetereng ya sephiri ya sebatli go e leka.',
