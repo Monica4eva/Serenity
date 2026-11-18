@@ -54,7 +54,7 @@ export function CareSync() {
         N.setNotificationHandler({ handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false }) });
         sub = N.addNotificationResponseReceivedListener((r) => {
           const route = r.notification.request.content.data?.route;
-          if (typeof route === 'string' && /^\/(pro|supporter)/.test(route)) {
+          if (typeof route === 'string' && /^\/(pro|supporter|daily|comeback|plan)/.test(route)) {
             refresh();
             router.push(route as any);
           }

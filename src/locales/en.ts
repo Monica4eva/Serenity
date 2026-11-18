@@ -3,11 +3,13 @@
 import companion from './en.companion.ts';
 import ui from './en.ui.ts';
 import care from './en.care.ts';
+import coach from './en.coach.ts';
 
 const en = {
   ui,
   companion,
   care,
+  ...coach,
   common: {
     continue: 'Continue',
     back: 'Back',

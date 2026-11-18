@@ -128,6 +128,17 @@ export function demoState(role: DemoRole, prev: State): State {
     journal,
     dayLogs,
     appointments: [{ id: 'demo-a1', title: tn ? 'Kopano le Mma Kgosi' : 'Session with Mma Kgosi', when: `${dayKey(daysAgo(-3))} 10:00` }],
+    // My plan, set up 12 days ago, so the weekly suggestion shows (a step up and an easier goal).
+    habits: {
+      createdAt: daysAgo(12, 9).toISOString(),
+      items: [
+        { id: 'checkin', target: 5 },
+        { id: 'connect', target: 1 },
+        { id: 'sleep', target: 7 },
+        { id: 'meeting', target: 2 },
+      ],
+    },
+    settings: { ...common.settings, reminders: true },
     activitiesDone: [
       { id: 'grounding', at: daysAgo(6, 18).toISOString(), feeling: 'better' },
       { id: 'walk', at: daysAgo(4, 17).toISOString(), feeling: 'better' },

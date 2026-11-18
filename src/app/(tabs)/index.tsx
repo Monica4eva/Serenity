@@ -14,6 +14,7 @@ import { Card, Page, useDS } from '../../components/ds';
 import { CelebrationArt, FadeIn, Pop } from '../../components/Motion';
 import { notificationsFor } from '../../lib/notify';
 import { todaysQuote, useContent } from '../../lib/content';
+import TodayCoach from '../../components/TodayCoach';
 
 const FOCUS_LABEL: Record<string, string> = {
   halt: 'ui.focusHalt',
@@ -110,6 +111,10 @@ export default function Today() {
             <CelebrationArt />
           </LinearGradient>
         </Pressable>
+      </FadeIn>
+
+      <FadeIn delay={10}>
+        <TodayCoach />
       </FadeIn>
 
       {careNotes.length ? (

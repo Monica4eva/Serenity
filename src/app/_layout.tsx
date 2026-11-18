@@ -16,6 +16,7 @@ import { useApp } from '../lib/useApp';
 import LockScreen from '../components/LockScreen';
 import { SyncProvider } from '../components/SyncProvider';
 import { homeRoute } from '../lib/roles';
+import ReminderSync from '../components/ReminderSync';
 
 /** Shown on every screen in "Try the demo" mode, pinned to the top so it never scrolls away:
  *  Home (back to this view's main screen), Switch view, and Exit demo (wipes the sample data). */
@@ -99,6 +100,7 @@ function Gate() {
     <>
       <StatusBar style={theme.dark ? 'light' : 'dark'} />
       <DemoBanner />
+      <ReminderSync />
       <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
         <Stack.Screen name="hub" options={{ presentation: 'transparentModal', animation: 'fade' }} />
         <Stack.Screen name="crisis" options={{ presentation: 'fullScreenModal' }} />

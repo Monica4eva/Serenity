@@ -11,11 +11,13 @@ import type { Strings } from './en.ts';
 import companion from './tn.companion.ts';
 import ui from './tn.ui.ts';
 import care from './tn.care.ts';
+import coach from './tn.coach.ts';
 
 const tn: Strings = {
   ui,
   companion,
   care,
+  ...coach,
   common: {
     continue: 'Tswelela',
     back: 'Boela morago',

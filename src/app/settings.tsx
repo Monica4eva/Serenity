@@ -12,6 +12,7 @@ import { backendEnabled } from '../lib/supabase';
 import { deleteAccountOnline, signOut } from '../lib/auth';
 import { getJournalKey, setJournalKey } from '../lib/crypto';
 import { useSync } from '../components/SyncProvider';
+import { ReminderSettings } from '../components/ReminderSettings';
 
 function Toggle({ label, desc, value, onChange }: { label: string; desc?: string; value: boolean; onChange: (v: boolean) => void }) {
   const { theme } = useApp();
@@ -203,6 +204,7 @@ export default function Settings() {
         <Toggle label={t('settings.highContrast')} value={s.highContrast} onChange={(v) => set({ highContrast: v })} />
         <Toggle label={t('settings.voiceFirst')} desc={t('settings.voiceFirstDesc')} value={s.voiceFirst} onChange={(v) => set({ voiceFirst: v })} />
         <Toggle label={t('ui.dailyReminders')} value={s.reminders} onChange={(v) => set({ reminders: v })} />
+        <ReminderSettings />
         <Toggle label={t('settings.simple')} desc={t('settings.simpleDesc')} value={s.simplePrompts} onChange={(v) => set({ simplePrompts: v })} />
       </Card>
       ) : null}

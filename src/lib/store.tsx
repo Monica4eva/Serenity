@@ -81,6 +81,9 @@ export type Settings = {
   blockScreenshots: boolean;
   reminders: boolean;
   voiceLang: 'en' | 'tn';
+  /** Adaptive reminders: no reminders between these hours (24h clock). */
+  quietFrom?: number;
+  quietTo?: number;
 };
 export type Approach = '12step' | 'pillars' | 'both' | 'wellbeing' | 'community' | 'lifeskills';
 /** Answers from the designer's Recovery Details and Baseline pages (free-form keys). */
@@ -155,6 +158,15 @@ export type State = {
   journalLocked: number;
   /** "Try the demo": sample data on this device only; never synced. */
   demo?: boolean;
+  /** Comeback Coach (after a slip or days away). */
+  comeback?: import('./comeback').Comeback;
+  comebackDismissedAt?: string;
+  /** Personalised habit plan ("My plan"). */
+  habits?: import('./habits').HabitPlan;
+  /** Day the in-app reminder was dismissed (yyyy-mm-dd). */
+  reminderDismissed?: string;
+  /** Days in-app reminders were dismissed (yyyy-mm-dd), so the time can adapt. */
+  reminderDismissals?: string[];
 };
 
 export const TERMS_VERSION = '0.1';

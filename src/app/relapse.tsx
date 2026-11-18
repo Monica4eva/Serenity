@@ -48,6 +48,11 @@ export default function Relapse() {
       <Card>
         <Txt variant="h3">{t('relapse.done')}</Txt>
       </Card>
+      <Card>
+        <Txt bold>{t('comeback.relapseTitle')}</Txt>
+        <Txt>{t('comeback.relapseBody')}</Txt>
+        <Button variant="success" title={t('comeback.relapseBtn')} onPress={() => router.replace('/comeback?reason=slip' as any)} />
+      </Card>
       <Txt>{t('relapse.supportBody')}</Txt>
       {state.contacts.map((c) => (
         <ContactRow key={c.id} c={c} actions />

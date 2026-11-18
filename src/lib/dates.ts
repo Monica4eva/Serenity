@@ -1,8 +1,8 @@
 // Date helpers. Day and month names come from the translation files (English and
 // Setswana) and are always generated from the real date. (Fixes the mock-up error:
 // 13 November 2026 is a Friday.)
-import en from '../locales/en';
-import tn from '../locales/tn';
+import en from '../locales/en.ts';
+import tn from '../locales/tn.ts';
 
 type Lang = 'en' | 'tn';
 export const dateNames = (lang: Lang = 'en') => (lang === 'tn' ? tn.dates : en.dates);
